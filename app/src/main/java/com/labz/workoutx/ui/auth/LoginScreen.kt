@@ -100,8 +100,7 @@ object LoginScreen {
             )
 
             OAuthBtns(
-                modifier = Modifier.align(CenterHorizontally),
-                onGoogleClick = { viewModel::signInWithGoogle }
+                onGoogleClick = { context -> viewModel.signInWithGoogle(context) }
             )
 
             CenteredText(

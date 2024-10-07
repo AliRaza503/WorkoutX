@@ -1,5 +1,6 @@
 package com.labz.workoutx.viewmodels
 
+import android.content.Context
 import android.util.Log
 import android.util.Log.e
 import androidx.compose.runtime.mutableStateOf
@@ -143,5 +144,36 @@ class SignupViewModel @Inject constructor(
 
     fun disableToast() {
         uiState.value = uiState.value.copy(showToast = false, toastMessage = null)
+    }
+
+    fun signInWithGoogle(context: Context) {
+        uiState.value = uiState.value.copy(isLoadingAcc = true)
+        viewModelScope.launch {
+            try {
+                accountService.signInWithGoogle(context).collect { result ->
+                    result.fold(
+                        onSuccess = {
+                            Log.d("LoginViewModel", "signInWithGoogle: Success")
+                            uiState.value = uiState.value.copy(
+                                showToast = true,
+                                toastMessage = "Login Successful",
+                                isLoadingAcc = false
+                            )
+                            // TODO: Navigate to home screen
+                        },
+                        onFailure = { e ->
+                            Log.d("LoginViewModel", "signInWithGoogle: ${e.localizedMessage}")
+                            uiState.value = uiState.value.copy(
+                                showToast = true,
+                                toastMessage = "Failed to sign in with Google",
+                                isLoadingAcc = false
+                            )
+                        }
+                    )
+                }
+            } finally {
+                uiState.value = uiState.value.copy(isLoadingAcc = false)
+            }
+        }
     }
 }

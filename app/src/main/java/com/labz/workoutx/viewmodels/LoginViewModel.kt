@@ -1,6 +1,7 @@
 package com.labz.workoutx.viewmodels
 
 import android.R.attr.data
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -50,11 +51,6 @@ class LoginViewModel @Inject constructor(
         uiState.value = uiState.value.copy(emailError = emailError, passwordError = passwordError)
         return emailError != null || passwordError != null
     }
-
-    fun createAnonymousAccount(onResult: (Throwable?) -> Unit) {
-        accountService.createAnonymousAccount(onResult)
-    }
-
     fun authenticate() {
         val email = uiState.value.email
         val password = uiState.value.password
@@ -66,7 +62,8 @@ class LoginViewModel @Inject constructor(
                         Log.d("LoginViewModel", "authenticate: Success")
                         uiState.value = uiState.value.copy(
                             showToast = true,
-                            toastMessage = "Login Successful"
+                            toastMessage = "Login Successful",
+                            isLoadingAcc = false
                         )
                         // TODO: Navigate to home screen
                     } else {
@@ -76,7 +73,8 @@ class LoginViewModel @Inject constructor(
             } catch (e: LoginException) {
                 uiState.value = uiState.value.copy(
                     showToast = true,
-                    toastMessage = e.localizedMessage
+                    toastMessage = e.localizedMessage,
+                    isLoadingAcc = false
                 )
                 Log.d("LoginViewModel", "authenticate: ${e.localizedMessage}")
             } finally {
@@ -111,24 +109,31 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun signInWithGoogle() {
-        val idToken = ""
+    fun signInWithGoogle(context: Context) {
         uiState.value = uiState.value.copy(isLoadingAcc = true)
         viewModelScope.launch {
             try {
-                val authResult = accountService.signInWithGoogle(idToken)
-                val user = authResult.user
-                // TODO: Store the user data in memory and go to the home screen
-                uiState.value = uiState.value.copy(
-                    showToast = true,
-                    toastMessage = "Sign-in with Google successful"
-                )
-            } catch (e: Exception) {
-                Log.e("LoginViewModel", "signInWithGoogle: ${e.localizedMessage}")
-                uiState.value = uiState.value.copy(
-                    showToast = true,
-                    toastMessage = "Failed to sign-in with Google"
-                )
+                accountService.signInWithGoogle(context).collect { result ->
+                    result.fold(
+                        onSuccess = {
+                            Log.d("LoginViewModel", "signInWithGoogle: Success")
+                            uiState.value = uiState.value.copy(
+                                showToast = true,
+                                toastMessage = "Login Successful",
+                                isLoadingAcc = false
+                            )
+                            // TODO: Navigate to home screen
+                        },
+                        onFailure = { e ->
+                            Log.d("LoginViewModel", "signInWithGoogle: ${e.localizedMessage}")
+                            uiState.value = uiState.value.copy(
+                                showToast = true,
+                                toastMessage = "Failed to sign in with Google",
+                                isLoadingAcc = false
+                            )
+                        }
+                    )
+                }
             } finally {
                 uiState.value = uiState.value.copy(isLoadingAcc = false)
             }

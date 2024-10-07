@@ -1,7 +1,9 @@
 package com.labz.workoutx.services.auth
 
+import android.content.Context
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.flow.Flow
 
 interface AccountService {
     fun createAnonymousAccount(onResult: (Throwable?) -> Unit)
@@ -15,5 +17,5 @@ interface AccountService {
 
     suspend fun getCurrentUser(): FirebaseUser?
     suspend fun sendPasswordResetEmail(emailAddress: String)
-    suspend fun signInWithGoogle(idToken: String): AuthResult
+    suspend fun signInWithGoogle(context: Context): Flow<Result<AuthResult>>
 }

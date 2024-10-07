@@ -129,9 +129,7 @@ object SignupScreen {
             )
 
             OAuthBtns(
-                modifier =
-                Modifier.align(Alignment.CenterHorizontally),
-                onGoogleClick = { /* TODO:viewModel::signInWithGoogle */ },
+                onGoogleClick = { context -> viewModel.signInWithGoogle(context) }
             )
 
             CenteredText(

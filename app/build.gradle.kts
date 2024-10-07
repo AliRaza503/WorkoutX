@@ -85,6 +85,7 @@ dependencies {
 
     // Also add the dependency for the Google Play services library and specify its version
     implementation(libs.play.services.auth)
+    implementation(libs.googleid)
 
     //Android Credential
     implementation(libs.androidx.credentials)
