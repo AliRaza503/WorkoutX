@@ -6,9 +6,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.labz.workoutx.ui.auth.LoginScreen
-import com.labz.workoutx.ui.auth.SignupScreen
-import com.labz.workoutx.ui.home.HomeScreen
+import com.labz.workoutx.ui.dashboard.NavigatorComposable
 
 @Preview(showBackground = true)
 @Composable
@@ -19,6 +17,6 @@ fun OnBoardingHost(modifier: Modifier = Modifier) {
         startDestination = "onboarding_screen1"
     ) {
         composable("onboarding_screen1") { OnboardingScreen(navController) }
-        composable("Home") { HomeScreen() }
+        composable("Home") { NavigatorComposable() }
     }
 }

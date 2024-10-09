@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,7 +25,7 @@ import com.labz.workoutx.R
 import com.labz.workoutx.ui.auth.SignupScreen.SignupScreenComposable
 import com.labz.workoutx.ui.exts.CenteredText
 import com.labz.workoutx.ui.exts.GradientButton
-import com.labz.workoutx.ui.exts.TextInput
+import com.labz.workoutx.ui.exts.ClickableTextInput
 import com.labz.workoutx.viewmodels.SignupViewModel
 import kotlinx.serialization.Serializable
 
@@ -44,12 +45,12 @@ object SignupScreen {
                 .padding(horizontal = 30.dp, vertical = 50.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            TopAuthScreenTexts(
-                text1 = "Hey there,",
-                text2 = "Create an Account"
+            HeadingAndText(
+                heading = "Hey there,",
+                text = "Create an Account"
             )
 
-            TextInput(
+            ClickableTextInput(
                 value = uiState.firstName,
                 onValueChange = viewModel::onFirstNameChanged,
                 label = "First Name",
@@ -62,7 +63,7 @@ object SignupScreen {
                 },
                 errorText = uiState.firstNameError,
             )
-            TextInput(
+            ClickableTextInput(
                 value = uiState.lastName,
                 onValueChange = viewModel::onLastNameChanged,
                 label = "Last Name",
@@ -75,7 +76,7 @@ object SignupScreen {
                 },
                 errorText = uiState.lastNameError,
             )
-            TextInput(
+            ClickableTextInput(
                 value = uiState.email,
                 onValueChange = viewModel::onEmailChanged,
                 label = "Email",
@@ -88,7 +89,7 @@ object SignupScreen {
                 },
                 errorText = uiState.emailError
             )
-            TextInput(
+            ClickableTextInput(
                 value = uiState.password,
                 onValueChange = viewModel::onPasswordChanged,
                 label = "Password",
@@ -99,9 +100,27 @@ object SignupScreen {
                         contentDescription = "Password",
                     )
                 },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            viewModel.togglePasswordVisibility()
+                        }
+                    ) {
+                        if (uiState.isPasswordVisible) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.eye),
+                                contentDescription = "Hide Password",
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(id = R.drawable.not_eye),
+                                contentDescription = "Show Password",
+                            )
+                        }
+                    }
+                },
                 protectedField = true,
                 isPasswordVisible = uiState.isPasswordVisible,
-                invertVisibility = viewModel::togglePasswordVisibility,
                 errorText = uiState.passwordError
             )
 

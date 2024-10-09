@@ -1,4 +1,4 @@
-package com.labz.workoutx.ui.home
+package com.labz.workoutx.ui.dashboard
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -8,14 +8,19 @@ import com.labz.workoutx.ui.auth.LoginScreen
 import com.labz.workoutx.ui.auth.LoginScreen.LoginScreenComposable
 import com.labz.workoutx.ui.auth.SignupScreen
 import com.labz.workoutx.ui.auth.SignupScreen.SignupScreenComposable
+import com.labz.workoutx.ui.profile.ProfileInit
+import com.labz.workoutx.ui.profile.ProfileInit.ProfileInitComposable
 
 @Composable
-fun HomeScreen() {
+fun NavigatorComposable() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = LoginScreen
+        startDestination = ProfileInit
     ) {
+        composable<ProfileInit> {
+            ProfileInitComposable()
+        }
         composable<LoginScreen> {
             LoginScreenComposable(
                 onLoginSuccess = { /* TODO: Navigate to home navController.navigate()*/ },

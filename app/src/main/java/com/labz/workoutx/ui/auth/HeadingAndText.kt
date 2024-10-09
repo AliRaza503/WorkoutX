@@ -1,5 +1,7 @@
 package com.labz.workoutx.ui.auth
 
+import android.R.id.text1
+import android.R.id.text2
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -15,12 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TopAuthScreenTexts(text1: String, text2: String) {
+fun HeadingAndText(heading: String, text: String) {
     Text(
-        text = text1,
+        text = heading,
         style = MaterialTheme.typography.headlineSmall,
         textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)
     )
     Text(
         textAlign = TextAlign.Center,
@@ -29,7 +31,7 @@ fun TopAuthScreenTexts(text1: String, text2: String) {
             .padding(bottom = 30.dp),
         text = buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)) {
-                append(text2)
+                append(text)
             }
         }
     )
