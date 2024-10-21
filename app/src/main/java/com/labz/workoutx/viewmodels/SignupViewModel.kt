@@ -2,24 +2,32 @@ package com.labz.workoutx.viewmodels
 
 import android.content.Context
 import android.util.Log
-import android.util.Log.e
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.labz.workoutx.services.auth.AccountService
+import com.labz.workoutx.services.db.DBService
 import com.labz.workoutx.throwables.SignupExceptions
 import com.labz.workoutx.uistates.SignupUiState
+import com.labz.workoutx.utils.Consts
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val dbService: DBService
 ) : ViewModel() {
     var uiState = mutableStateOf(SignupUiState())
         private set
+
+    private val _authSucceeded = MutableStateFlow(false)
+    val authSucceeded: StateFlow<Boolean> = _authSucceeded
+
 
     private fun getEmailError(value: String) =
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(value)
@@ -83,17 +91,17 @@ class SignupViewModel @Inject constructor(
         viewModelScope.launch {
             uiState.value = uiState.value.copy(isLoadingAcc = true)
             try {
-                accountService.authenticate(email, password) { result ->
+                accountService.authenticate(email, password, dbServiceRef = dbService) { result ->
                     if (result == null) {
-                        Log.d("SignupViewModel", "authenticate: Success")
+                        Log.d("${Consts.LOG_TAG}_SignupViewModel", "authenticate: Success")
                         onResult(null)
                     } else {
-                        e("SignupViewModel", "authenticate: Error: $result")
+                        Log.e("${Consts.LOG_TAG}_SignupViewModel", "authenticate: Error: $result")
                         throw result
                     }
                 }
             } catch (e: SignupExceptions) {
-                e("SignupViewModel", "authenticate: ${e.localizedMessage}")
+                Log.e("${Consts.LOG_TAG}_SignupViewModel", "authenticate: ${e.localizedMessage}")
                 onResult(e)
             } finally {
                 uiState.value = uiState.value.copy(isLoadingAcc = false)
@@ -111,19 +119,22 @@ class SignupViewModel @Inject constructor(
                     "${uiState.value.firstName} ${uiState.value.lastName}"
                 ) { result ->
                     if (result == null) {
-                        Log.d("SignupViewModel", "createAccount: Account created successfully")
-                        // Now authenticate the user and navigate to home screen
+                        Log.d(
+                            "${Consts.LOG_TAG}_SignupViewModel",
+                            "createAccount: Account created successfully"
+                        )
+                        // Now authenticate the user and navigate to the next screen
                         authenticate(uiState.value.email, uiState.value.password) { result ->
                             if (result == null) {
                                 Log.d(
-                                    "SignupViewModel",
+                                    "${Consts.LOG_TAG}_SignupViewModel",
                                     "createAccount: Authenticated successfully"
                                 )
                                 uiState.value = uiState.value.copy(
                                     showToast = true,
                                     toastMessage = "Account created and authenticated successfully"
                                 )
-                                // TODO: Navigate to home screen
+                                _authSucceeded.value = true
                             }
                         }
                     } else {
@@ -135,7 +146,7 @@ class SignupViewModel @Inject constructor(
                     showToast = true,
                     toastMessage = e.localizedMessage
                 )
-                Log.e("SignupViewModel", "createAccount: ${e.localizedMessage}")
+                Log.e("${Consts.LOG_TAG}_SignupViewModel", "createAccount: ${e.localizedMessage}")
             } finally {
                 uiState.value = uiState.value.copy(isLoadingAcc = false)
             }
@@ -150,7 +161,7 @@ class SignupViewModel @Inject constructor(
         uiState.value = uiState.value.copy(isLoadingAcc = true)
         viewModelScope.launch {
             try {
-                accountService.signInWithGoogle(context).collect { result ->
+                accountService.signInWithGoogle(context = context, dbServiceRef = dbService).collect { result ->
                     result.fold(
                         onSuccess = {
                             Log.d("LoginViewModel", "signInWithGoogle: Success")
@@ -159,7 +170,7 @@ class SignupViewModel @Inject constructor(
                                 toastMessage = "Login Successful",
                                 isLoadingAcc = false
                             )
-                            // TODO: Navigate to home screen
+                            _authSucceeded.value = true
                         },
                         onFailure = { e ->
                             Log.d("LoginViewModel", "signInWithGoogle: ${e.localizedMessage}")
@@ -175,5 +186,9 @@ class SignupViewModel @Inject constructor(
                 uiState.value = uiState.value.copy(isLoadingAcc = false)
             }
         }
+    }
+
+    fun onNavigated() {
+        _authSucceeded.value = false
     }
 }

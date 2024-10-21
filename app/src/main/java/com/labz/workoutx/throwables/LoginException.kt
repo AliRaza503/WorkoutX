@@ -10,4 +10,5 @@ sealed class LoginException : Throwable() {
     }
 
     data class UnknownException(val throwable: Throwable) : LoginException()
+
 }

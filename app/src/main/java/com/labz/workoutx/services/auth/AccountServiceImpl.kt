@@ -17,29 +17,33 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.labz.workoutx.models.User
+import com.labz.workoutx.services.db.DBService
 import com.labz.workoutx.throwables.LoginException
 import com.labz.workoutx.throwables.SignupExceptions
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.security.MessageDigest
 import java.util.UUID
 
 
 class AccountServiceImpl : AccountService {
-    override fun createAnonymousAccount(onResult: (Throwable?) -> Unit) {
-        Firebase.auth.signInAnonymously()
-            .addOnCompleteListener { onResult(it.exception) }
-    }
 
     override suspend fun authenticate(
         email: String,
         password: String,
+        dbServiceRef: DBService,
         onResult: (Throwable?) -> Unit
     ) {
         try {
             Firebase.auth.signInWithEmailAndPassword(email, password).await()
+            withContext(Dispatchers.IO) {
+                dbServiceRef.getUserDataToUserObj()
+            }
             onResult(null) // Success
         } catch (e: Exception) {
             val authError = when (e) {
@@ -48,6 +52,7 @@ class AccountServiceImpl : AccountService {
                     // You can handle this error specifically, e.g., show a message to the user
                     LoginException.InvalidCredentials
                 }
+
                 else -> {
                     // Other authentication errors
                     LoginException.UnknownException(e)
@@ -97,7 +102,10 @@ class AccountServiceImpl : AccountService {
         Firebase.auth.sendPasswordResetEmail(emailAddress).await()
     }
 
-    override suspend fun signInWithGoogle(context: Context): Flow<Result<AuthResult>> {
+    override suspend fun signInWithGoogle(
+        context: Context,
+        dbServiceRef: DBService
+    ): Flow<Result<AuthResult>> {
         val firebaseAuth = FirebaseAuth.getInstance()
         return callbackFlow {
             try {
@@ -134,11 +142,14 @@ class AccountServiceImpl : AccountService {
                     val authCredential =
                         GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
                     val authResult = firebaseAuth.signInWithCredential(authCredential).await()
+                    withContext(Dispatchers.IO) {
+                        dbServiceRef.getUserDataToUserObj()
+                    }
                     trySend(Result.success(authResult))
                 } else {
                     throw RuntimeException("Received an invalid credential type")
                 }
-            } catch (e: GetCredentialCancellationException) {
+            } catch (_: GetCredentialCancellationException) {
                 trySend(Result.failure(Exception("Sign-in was canceled. Please try again.")))
 
             } catch (e: Exception) {
@@ -146,5 +157,19 @@ class AccountServiceImpl : AccountService {
             }
             awaitClose { }
         }
+    }
+
+    override suspend fun signOut(onResult: (Throwable?) -> Unit) {
+        try {
+            Firebase.auth.signOut()
+            User.userLoggedOut()
+            onResult(null) // Success
+        } catch (e: Exception) {
+            onResult(e) // Error
+        }
+    }
+
+    override fun isUserLoggedIn(): Boolean {
+        return Firebase.auth.currentUser != null
     }
 }

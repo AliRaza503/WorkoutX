@@ -15,6 +15,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.labz.workoutx.R
 
@@ -48,5 +49,15 @@ fun CenteredText(text: String, btnText: String, btnOnClick: () -> Unit) {
             ),
         text = annotatedText,
         textAlign = TextAlign.Center
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCenteredText() {
+    CenteredText(
+        text = "UserName: John Doe, User Email: ",
+        btnText = "Logout",
+        btnOnClick = {}
     )
 }

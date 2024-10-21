@@ -17,4 +17,10 @@ data class ProfileInitUiState(
     val genderError: String? = null,
     val goalError: String? = null,
     val dateOfBirthError: String? = null
-)
+) {
+    fun hasErrors(): Boolean = weightError != null
+            || heightError != null
+            || genderError != null
+            || goalError != null
+            || dateOfBirthError != null
+}

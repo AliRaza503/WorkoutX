@@ -1,4 +1,4 @@
-package com.labz.workoutx.ui.auth
+package com.labz.workoutx.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -18,14 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.labz.workoutx.R
-import com.labz.workoutx.ui.auth.SignupScreen.SignupScreenComposable
+import com.labz.workoutx.ui.auth.HeadingAndText
+import com.labz.workoutx.ui.auth.OAuthBtns
 import com.labz.workoutx.ui.exts.CenteredText
-import com.labz.workoutx.ui.exts.GradientButton
 import com.labz.workoutx.ui.exts.ClickableTextInput
+import com.labz.workoutx.ui.exts.GradientButton
 import com.labz.workoutx.viewmodels.SignupViewModel
 import kotlinx.serialization.Serializable
 
@@ -33,11 +34,20 @@ import kotlinx.serialization.Serializable
 object SignupScreen {
     @Composable
     fun SignupScreenComposable(
-        onSignupSuccess: () -> Unit,
+        authenticationSucceeded: () -> Unit,
         onLoginClicked: () -> Unit,
         viewModel: SignupViewModel = hiltViewModel()
     ) {
         val uiState by viewModel.uiState
+
+        val authSucceeded by viewModel.authSucceeded.collectAsStateWithLifecycle()
+        // Trigger navigation when the state changes
+        LaunchedEffect(authSucceeded) {
+            if (authSucceeded) {
+                authenticationSucceeded()
+                viewModel.onNavigated() // Reset state after navigation
+            }
+        }
 
         Column(
             modifier = Modifier
@@ -170,11 +180,11 @@ object SignupScreen {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SignupScreenPreview() {
-    SignupScreenComposable(
-        onSignupSuccess = {},
-        onLoginClicked = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun SignupScreenPreview() {
+//    SignupScreen.SignupScreenComposable(
+//        onSignupSuccess = {},
+//        onLoginClicked = {}
+//    )
+//}

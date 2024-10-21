@@ -1,48 +1,53 @@
 package com.labz.workoutx.viewmodels
 
 import android.util.Log
-import android.util.Log.e
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.labz.workoutx.models.Gender
 import com.labz.workoutx.models.Goal
-import com.labz.workoutx.models.User.dateOfBirth
+import com.labz.workoutx.services.db.DBService
 import com.labz.workoutx.uistates.ProfileInitUiState
+import com.labz.workoutx.utils.Consts
+import com.labz.workoutx.utils.DateFormatters.toFormattedDateString
+import com.labz.workoutx.utils.DateFormatters.toFormattedString
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 
 @HiltViewModel
-class ProfileInitViewModel @Inject constructor() : ViewModel() {
+class ProfileInitViewModel @Inject constructor(
+    private val dbService: DBService
+) : ViewModel() {
     var uiState = mutableStateOf(ProfileInitUiState())
         private set
+    private val _navigateToDashboard = MutableStateFlow(false)
+    val navigateToDashboard: StateFlow<Boolean> = _navigateToDashboard
 
     fun onGenderChanged(gender: String) {
         try {
-            uiState.value = uiState.value.copy(gender = Gender.valueOf(gender = gender))
+            uiState.value =
+                uiState.value.copy(gender = Gender.valueOf(gender = gender), genderError = "")
         } catch (e: IllegalArgumentException) {
-            Log.e("ProfileInitViewModel", "onGenderChanged: ${e.message}")
-            uiState.value = uiState.value.copy(genderError = "Invalid gender")
+            Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onGenderChanged: ${e.message}")
+            uiState.value = uiState.value.copy(gender = null, genderError = "Invalid gender")
         }
     }
 
     fun onDateOfBirthChanged(dateOfBirth: String) {
         uiState.value = uiState.value.copy(
-            dateOfBirth = Calendar.getInstance().apply {
-                time =
-                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(dateOfBirth) ?: Date()
-                Log.d("ProfileInitViewModel", "onDateOfBirthChanged: $time")
-            }.toString()
+            dateOfBirth = dateOfBirth.toFormattedDateString(),
+            dateOfBirthError = null
         )
     }
 
     fun onDateOfBirthChanged(dateOfBirth: Long?) {
         if (dateOfBirth == null) {
-            Log.e("ProfileInitViewModel", "onDateOfBirthChanged: Invalid date")
+            Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onDateOfBirthChanged: Invalid date")
             uiState.value = uiState.value.copy(
                 dateOfBirthError = "Invalid date"
             )
@@ -51,14 +56,14 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
         val calendar = Calendar.getInstance().apply {
             timeInMillis = dateOfBirth
         }
-        val date = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val year = calendar.get(Calendar.YEAR)
-        val dateOfBirth = "$date/$month/$year"
+        val dateOfBirth = calendar.toFormattedString()
         uiState.value = uiState.value.copy(
             dateOfBirth = dateOfBirth
         )
-        Log.d("ProfileInitViewModel", "onDateOfBirthChange: ${uiState.value.dateOfBirth}")
+        Log.d(
+            "${Consts.LOG_TAG}_ProfileInitViewModel",
+            "onDateOfBirthChange: ${uiState.value.dateOfBirth}"
+        )
     }
 
     fun onWeightChanged(value: String) {
@@ -67,7 +72,7 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
                 weightError = "Weight is required",
                 weightInKgs = ""
             )
-            Log.d("ProfileInitViewModel", "onWeightChanged: Invalid value")
+            Log.d("${Consts.LOG_TAG}_ProfileInitViewModel", "onWeightChanged: Invalid value")
         }
         try {
             val doubleValue =
@@ -77,7 +82,7 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
                     weightError = "Weight cannot be negative",
                     weightInKgs = ""
                 )
-                Log.e("ProfileInitViewModel", "onWeightChanged: Negative value")
+                Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onWeightChanged: Negative value")
                 return
             }
             uiState.value = uiState.value.copy(
@@ -89,7 +94,7 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
                 weightError = "Invalid weight!\nPlease enter a decimal number",
                 weightInKgs = ""
             )
-            Log.e("ProfileInitViewModel", "onWeightChanged: ${e.message}")
+            Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onWeightChanged: ${e.message}")
         }
     }
 
@@ -99,7 +104,7 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
                 heightError = "Height is required",
                 heightInCms = ""
             )
-            Log.d("ProfileInitViewModel", "onHeightChanged: Invalid value")
+            Log.d("${Consts.LOG_TAG}_ProfileInitViewModel", "onHeightChanged: Invalid value")
         }
         try {
             val doubleValue =
@@ -109,7 +114,7 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
                     heightError = "Height cannot be negative",
                     heightInCms = ""
                 )
-                Log.e("ProfileInitViewModel", "onHeightChanged: Negative value")
+                Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onHeightChanged: Negative value")
                 return
             }
             uiState.value = uiState.value.copy(
@@ -121,7 +126,7 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
                 heightError = "Invalid height\nPlease enter a decimal number",
                 heightInCms = ""
             )
-            Log.e("ProfileInitViewModel", "onHeightChanged: ${e.message}")
+            Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onHeightChanged: ${e.message}")
         }
     }
 
@@ -129,7 +134,7 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
         try {
             uiState.value = uiState.value.copy(goal = Goal.valueOf(goal = goal))
         } catch (e: IllegalArgumentException) {
-            Log.e("ProfileInitViewModel", "onGoalChanged: ${e.message}")
+            Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onGoalChanged: ${e.message}")
             uiState.value = uiState.value.copy(goalError = "Invalid goal")
         }
     }
@@ -148,6 +153,34 @@ class ProfileInitViewModel @Inject constructor() : ViewModel() {
 
     fun closeDatePicker() {
         uiState.value = uiState.value.copy(datePickerOpened = false)
+    }
+
+    fun nextBtnClicked() {
+        uiState.value = uiState.value.copy(
+            weightError = if (uiState.value.weightInKgs.isNullOrEmpty() == true) "Weight is required" else null,
+            heightError = if (uiState.value.heightInCms.isNullOrEmpty() == true) "Height is required" else null,
+            dateOfBirthError = if (uiState.value.dateOfBirth.isNullOrEmpty() == true) "Date of birth is required" else null,
+            genderError = if (uiState.value.gender == null) "Gender is required" else null,
+            goalError = if (uiState.value.goal == null) "Goal is required" else null
+        )
+        if (!uiState.value.hasErrors()) {
+            viewModelScope.launch {
+                dbService.setUserData(
+                    weightInKgs = uiState.value.weightInKgs!!.toDouble(),
+                    heightInCms = uiState.value.heightInCms!!.toDouble(),
+                    dateOfBirth = uiState.value.dateOfBirth!!,
+                    gender = uiState.value.gender!!.toString(),
+                    goal = uiState.value.goal!!.toString()
+                )
+            }
+            _navigateToDashboard.value = true
+        } else {
+            Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "nextBtnClicked: Has errors")
+        }
+    }
+
+    fun onNavigated() {
+        _navigateToDashboard.value = false // Reset navigation state after navigating
     }
 }
 
