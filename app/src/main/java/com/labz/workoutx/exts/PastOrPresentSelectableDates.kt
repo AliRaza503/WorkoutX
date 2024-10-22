@@ -12,11 +12,7 @@ object PastOrPresentSelectableDates : SelectableDates {
         return utcTimeMillis <= System.currentTimeMillis()
     }
 
-    override fun isSelectableYear(year: Int): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            year <= LocalDate.now().year
-        } else {
-            year <= Calendar.getInstance().get(Calendar.YEAR)
-        }
-    }
+    override fun isSelectableYear(year: Int): Boolean =
+        year <= LocalDate.now().year
+
 }

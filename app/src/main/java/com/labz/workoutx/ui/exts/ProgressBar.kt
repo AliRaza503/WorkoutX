@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 fun VerticalProgress(
     day: String = "Sun",
     progressPercentage: Float,
+    progressValue: Float,
     modifier: Modifier = Modifier
 ) {
     var prTemp = progressPercentage
@@ -70,11 +71,15 @@ fun VerticalProgress(
                     )
             )
         }
+        Text(
+            text = "${progressValue.toInt()}",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ProgressBarPreview() {
-    VerticalProgress(progressPercentage = 50f)
+    VerticalProgress(progressPercentage = 50f, progressValue = 5000f)
 }

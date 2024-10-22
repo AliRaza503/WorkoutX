@@ -19,43 +19,17 @@ import com.labz.workoutx.viewmodels.DashboardViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
-object DashBoardScreen {
+data class DashBoardScreen(
+    val permissionsGranted: Boolean
+) {
     @Composable
     fun DashBoardScreenComposable(
         signedOut: () -> Unit,
-        noPermissionsGrantedAction: () -> Unit,
         viewModel: DashboardViewModel = hiltViewModel()
     ) {
         Log.d("XYZCYZ", "DashBoardScreenComposable called")
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-//        val onPermissionsResult = { viewModel.initialLoad() }
-//        val permissionsLauncher =
-//            rememberLauncherForActivityResult(viewModel.permissionsLauncher) {
-//                onPermissionsResult()
-//            }
-//        LaunchedEffect(key1 = Unit) {
-//            if(!viewModel.allPermissionsGranted()) {
-//                noPermissionsGrantedAction()
-//            }
-//        }
-//        LaunchedEffect(uiState.allPermissionsGranted) {
-//            if (!uiState.allPermissionsGranted) {
-//                val permissions = viewModel.getPermissionsList()
-//                if (permissions.isNotEmpty()) {
-//                    permissionsLauncher.launch(permissions)
-//                }
-//            } else {
-//                viewModel.initialLoad()
-//            }
-//        }
-
-        LaunchedEffect(key1 = Unit) {
-            viewModel.allPermissionsGranted()
-            if (!uiState.allPermissionsGranted) {
-                noPermissionsGrantedAction()
-            }
-        }
         val isSignOutSucceeded by viewModel.isSignOutSucceeded.collectAsStateWithLifecycle()
         LaunchedEffect(isSignOutSucceeded) {
             if (isSignOutSucceeded) {

@@ -78,6 +78,7 @@ object PermissionsScreen {
                             }
                         } else if (uiState is PermissionsUiState.Granted) {
                             onPermissionsGranted()
+                            return@collect
                         }
                     }
             }
