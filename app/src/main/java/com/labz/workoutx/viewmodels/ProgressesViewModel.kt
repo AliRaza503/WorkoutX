@@ -12,12 +12,18 @@ import com.labz.workoutx.models.ProgressData.TargetProgressData
 import com.labz.workoutx.services.healthConnect.HealthConnectService
 import com.labz.workoutx.uistates.ProgressesUiState
 import com.labz.workoutx.exts.Exts.getKey
+import com.labz.workoutx.models.Goal
+import com.labz.workoutx.models.User
+import com.labz.workoutx.services.db.DBService
+import com.labz.workoutx.services.goalPredictor.GoalPredictorService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -25,7 +31,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProgressesViewModel @Inject constructor(
-    application: Application,
+    private val application: Application,
+    private val dbService: DBService,
+    private val goalPredictorService: GoalPredictorService,
     private val healthConnectService: HealthConnectService
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProgressesUiState())
@@ -46,22 +54,17 @@ class ProgressesViewModel @Inject constructor(
     }
 
     // Function to fetch the data
-    fun fetchProgresses() {
+    private fun fetchProgresses() {
         viewModelScope.launch {
             // Set loading to true before fetching the data
             _uiState.value = _uiState.value.copy(isCircularProgressIndicatorVisible = true)
-
             try {
                 // Fetch all data from the service
                 val steps = healthConnectService.readStepsForLast30Days(healthConnectClient)
                 val totalCalories =
                     healthConnectService.readTotalCaloriesBurnedForLast30Days(healthConnectClient)
-                val activeCalories =
-                    healthConnectService.readActiveCaloriesBurnedForLast30Days(healthConnectClient)
-                val sleepSessions =
-                    healthConnectService.readSleepSessionsForLast30Days(healthConnectClient)
-                val weights =
-                    healthConnectService.readWeight(healthConnectClient)
+                val minutesActivePerDay =
+                    dbService.getActivityMinutesForMonth()
 
                 // Create ProgressData objects and store them in the progressMap
                 val progresses = mutableMapOf<String, ProgressData>()
@@ -69,8 +72,7 @@ class ProgressesViewModel @Inject constructor(
                     progresses[date] = ProgressData(
                         stepsData = stepCount,
                         caloriesBurned = totalCalories[date] ?: 0.0,
-                        weight = weights[date] ?: 0.0,
-                        sleepScore = sleepSessions[date] ?: emptyList()
+                        minutesActive = minutesActivePerDay[date] ?: 0.0,
                     )
                 }
                 // Update the progress map in the ViewModel
@@ -101,8 +103,7 @@ class ProgressesViewModel @Inject constructor(
             progresses[i] = progressMap.value[dayInstant.getKey()] ?: ProgressData(
                 stepsData = 0,
                 caloriesBurned = 0.0,
-                weight = 0.0,
-                sleepScore = emptyList()
+                minutesActive = 0.0,
             )
         }
         _uiState.update {
@@ -126,8 +127,7 @@ class ProgressesViewModel @Inject constructor(
             progress[i] = progressMap.value[dayInstant.getKey()] ?: ProgressData(
                 stepsData = 0,
                 caloriesBurned = 0.0,
-                weight = 0.0,
-                sleepScore = emptyList()
+                minutesActive = 0.0,
             )
         }
         _uiState.update {
@@ -152,8 +152,7 @@ class ProgressesViewModel @Inject constructor(
             progress[i] = progressMap.value[dayInstant.getKey()] ?: ProgressData(
                 stepsData = 0,
                 caloriesBurned = 0.0,
-                weight = 0.0,
-                sleepScore = emptyList()
+                minutesActive = 0.0,
             )
             Log.d(
                 "ProgressesComposable",
@@ -187,19 +186,34 @@ class ProgressesViewModel @Inject constructor(
         return when (selectedTab.value) {
             ProgressTab.STEPS -> (progress / TargetProgressData.TARGET_STEPS) * 100
             ProgressTab.CALORIES -> (progress / TargetProgressData.TARGET_TOTAL_CALORIES_BURNED) * 100
-            ProgressTab.WEIGHT -> (progress / TargetProgressData.TARGET_WEIGHT) * 100
-            ProgressTab.SLEEP -> (progress / TargetProgressData.TARGET_DEEP_SLEEP_MINUTES) * 100
+            ProgressTab.MINUTES -> (progress / TargetProgressData.TARGET_MINUTES_ACTIVE_PER_DAY) * 100
             else -> 0f
         }
     }
 
     fun getTarget(tab: ProgressTab): String {
         return when (tab) {
-            ProgressTab.STEPS -> "to achieve${TargetProgressData.TARGET_STEPS.toInt()} step count"
+            ProgressTab.STEPS -> "to achieve ${TargetProgressData.TARGET_STEPS.toInt()} step count"
             ProgressTab.CALORIES -> "to burn ${TargetProgressData.TARGET_TOTAL_CALORIES_BURNED.toInt()} calories in total"
-            ProgressTab.WEIGHT -> "to weigh ${TargetProgressData.TARGET_WEIGHT.toInt()} kg"
-            ProgressTab.SLEEP -> "to take a deep sleep for ${TargetProgressData.TARGET_DEEP_SLEEP_MINUTES} minutes"
+            ProgressTab.MINUTES -> "to do workout for ${TargetProgressData.TARGET_MINUTES_ACTIVE_PER_DAY.toInt()} minutes per day"
         }
+    }
+
+    fun getGoal(): Goal {
+        var goal: Goal? = User.goal
+        if (goal == null) {
+            val avgTotalCaloriesBurned = progressMap.value.values.map { it.caloriesBurned }.average()
+            val avgMinutesActive = progressMap.value.values.map { it.minutesActive }.average()
+            goalPredictorService.preProcessData(application = application, avgCalories = avgTotalCaloriesBurned, avgMinutes = avgMinutesActive)
+            goal = goalPredictorService.predictGoal()
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    dbService.setGoal(goal)
+                }
+            }
+        }
+        User.updateGoal(goal)
+        return goal
     }
 
 }

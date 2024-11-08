@@ -4,10 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -37,7 +41,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.labz.workoutx.R
 import com.labz.workoutx.exts.PastOrPresentSelectableDates
 import com.labz.workoutx.models.Gender
-import com.labz.workoutx.models.Goal
 import com.labz.workoutx.ui.auth.HeadingAndText
 import com.labz.workoutx.ui.exts.ClickableTextInput
 import com.labz.workoutx.ui.exts.GradientButton
@@ -61,11 +64,13 @@ object ProfileInitScreen {
             }
         }
         val uiState by viewModel.uiState
+        viewModel.tryInitializeProfile()
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 30.dp, vertical = 10.dp)
+                .padding(horizontal = 30.dp, vertical = 20.dp)
                 .verticalScroll(rememberScrollState())
+                .imePadding()  // Add padding for keyboard
         ) {
             Image(
                 painter = painterResource(id = R.drawable.profile_init),
@@ -80,7 +85,6 @@ object ProfileInitScreen {
                 heading = "Profile initialization will help us to personalize your experience"
             )
             val focusRequesterForGender = remember { FocusRequester() }
-            val focusRequesterForGoal = remember { FocusRequester() }
             ExposedDropdownMenuBox(
                 expanded = uiState.genderDropDownOpened,
                 onExpandedChange = { viewModel::genderDropDownChanged },
@@ -158,11 +162,11 @@ object ProfileInitScreen {
                 value = uiState.weightInKgs?.toString() ?: "",
                 onValueChange = viewModel::onWeightChanged,
                 label = "Weight",
-                placeholder = "Enter your weight",
+                placeholder = "Enter your weight in kgs",
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.weight),
-                        contentDescription = "First Name",
+                        contentDescription = "Weight Text input",
                     )
                 },
                 errorText = uiState.weightError,
@@ -173,84 +177,40 @@ object ProfileInitScreen {
                 value = uiState.heightInCms?.toString() ?: "",
                 onValueChange = viewModel::onHeightChanged,
                 label = "Height",
-                placeholder = "Enter your height",
+                placeholder = "Enter your height in cms",
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.swap),
-                        contentDescription = "First Name",
+                        contentDescription = "Height Text input",
                     )
                 },
                 errorText = uiState.heightError,
                 numericKeyboard = true
             )
 
-            ExposedDropdownMenuBox(
-                expanded = uiState.genderDropDownOpened,
-                onExpandedChange = { viewModel::genderDropDownChanged },
-            ) {
-                ClickableTextInput(
-                    value = uiState.goal?.toString() ?: "",
-                    onValueChange = viewModel::onGoalChanged,
-                    label = "Goal",
-                    placeholder = "Choose Goal",
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.goal),
-                            contentDescription = "First Name",
-                        )
-                    },
-                    modifier = Modifier
-                        .menuAnchor(
-                            type = MenuAnchorType.PrimaryNotEditable
-                        )
-                        .focusRequester(focusRequester = focusRequesterForGoal)
-                        .clickable(
-                            onClick = {
-                                focusRequesterForGoal.requestFocus()
-                            }
-                        ),
-                    onTextFieldClicked = {
-                        viewModel.goalDropDownChanged(!uiState.genderDropDownOpened)
-                    },
-                    readonly = true,
-                    trailingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_chevron_down),
-                            contentDescription = null
-                        )
-                    }
-                )
-
-                ExposedDropdownMenu(
-                    expanded = uiState.goalDropDownOpened,
-                    onDismissRequest = { viewModel.goalDropDownChanged(false) },
-                    modifier = Modifier.border(
-                        width = 0.2.dp,
-                        color = Color(0xFF7B6F72),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+            ClickableTextInput(
+                value = uiState.minutesActivePerDay?.toString() ?: "",
+                onValueChange = viewModel::onMinutesActivePerDayChanged,
+                label = "Minutes of exercise per day",
+                placeholder = "Enter minutes of exercise per day",
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.timer),
+                        contentDescription = "Minutes of exercise per day Text input",
                     )
-                ) {
-                    Goal.entries.forEach { goal ->
-                        DropdownMenuItem(
-                            text = { Text(goal.toString()) },
-                            onClick = {
-                                viewModel.onGoalChanged(goal.toString())
-                                viewModel.goalDropDownChanged(false)
-                            }
-                        )
-                    }
-                }
-            }
-
+                },
+                errorText = uiState.minutesError,
+                numericKeyboard = true
+            )
             GradientButton(
                 text = "Next",
                 onClick = {
                     viewModel.nextBtnClicked()
-                    // TODO: Navigate to the home screen
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp),
+                    .padding(top = 20.dp)
+                    .windowInsetsPadding(WindowInsets.ime),
             )
         }
 

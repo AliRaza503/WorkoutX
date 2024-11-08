@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -15,16 +17,17 @@ import androidx.navigation.toRoute
 import com.labz.workoutx.ui.screens.DashBoardScreen
 import com.labz.workoutx.ui.screens.LoginScreen
 import com.labz.workoutx.ui.screens.LoginScreen.LoginScreenComposable
+import com.labz.workoutx.ui.screens.PerformWorkoutScreen
 import com.labz.workoutx.ui.screens.PermissionsScreen
 import com.labz.workoutx.ui.screens.PermissionsScreen.PermissionsScreenComposable
 import com.labz.workoutx.ui.screens.ProfileInitScreen
 import com.labz.workoutx.ui.screens.ProfileInitScreen.ProfileInitComposable
 import com.labz.workoutx.ui.screens.SignupScreen
 import com.labz.workoutx.ui.screens.SignupScreen.SignupScreenComposable
+import com.labz.workoutx.ui.screens.WorkoutPlanningScreen
+import com.labz.workoutx.ui.screens.WorkoutPlanningScreen.WorkoutPlanningScreenComposable
 import com.labz.workoutx.viewmodels.NavigatorObjViewModel
 import kotlinx.serialization.Serializable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 
 @Serializable
 object NavigatorObj {
@@ -36,7 +39,7 @@ object NavigatorObj {
         val isUserInfoLoaded by viewModel.isUserInfoLoaded.collectAsStateWithLifecycle()
         val areAllPermissionsGranted by viewModel.areAllPermissionsGranted.collectAsStateWithLifecycle()
         if (null == isUserInfoLoaded || null == areAllPermissionsGranted) {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         } else {
@@ -124,11 +127,22 @@ object NavigatorObj {
                 composable<DashBoardScreen> { backStackEntry ->
                     val dashBoardScreen = backStackEntry.toRoute<DashBoardScreen>()
                     dashBoardScreen.DashBoardScreenComposable(
-                        signedOut = {
+                        modifier = modifier,
+                        navigateToLoginScreen = {
                             navController.navigate(LoginScreen) {
                                 popUpTo(dashBoardScreen) { inclusive = true }
                             }
                         },
+                        navigateToProfileInitScreen = {
+                            navController.navigate(ProfileInitScreen) {
+                                popUpTo(dashBoardScreen) { inclusive = false }
+                            }
+                        },
+                        navigateToWorkoutScreen = {
+                            navController.navigate(WorkoutPlanningScreen) {
+                                popUpTo(dashBoardScreen) { inclusive = false }
+                            }
+                        }
                     )
                 }
                 composable<PermissionsScreen> {
@@ -139,6 +153,25 @@ object NavigatorObj {
                             ) {
                                 popUpTo(PermissionsScreen) { inclusive = true }
                                 launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+                composable<WorkoutPlanningScreen> {
+                    WorkoutPlanningScreenComposable (
+                        startWorkout = { workoutID ->
+                            navController.navigate(PerformWorkoutScreen(workoutID)) {
+                                popUpTo(WorkoutPlanningScreen) { inclusive = false }
+                            }
+                        }
+                    )
+                }
+                composable<PerformWorkoutScreen> { backStackEntry ->
+                    val performWorkoutScreen = backStackEntry.toRoute<PerformWorkoutScreen>()
+                    performWorkoutScreen.PerformWorkoutComposable(
+                        onWorkoutFinished = {
+                            navController.navigate(DashBoardScreen(permissionsGranted = true)) {
+                                popUpTo(performWorkoutScreen) { inclusive = true }
                             }
                         }
                     )

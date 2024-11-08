@@ -6,58 +6,21 @@ import java.util.Calendar
 
 object User {
     var name: String? = null
-        set(value) {
-            if (field == null || value == null) {
-                field = value
-            } else {
-                Log.e("${Consts.LOG_TAG}_User.kt", "name: Cannot set name again")
-            }
-        }
+        private set
 
     var email: String? = null
-        set(value) {
-            if (field == null || value == null) {
-                field = value
-            } else {
-                Log.e("${Consts.LOG_TAG}_User.kt", "email: Cannot set email again")
-            }
-        }
+        private set
 
     var photoUrl: String? = null
-        set(value) {
-            if (field == null || value == null) {
-                field = value
-            } else {
-                Log.e("${Consts.LOG_TAG}_User.kt", "photoUrl: Cannot set photoUrl again")
-            }
-        }
+        private set
 
     var gender: Gender? = null
-        set(value) {
-            if (field == null || value == null) {
-                field = value
-            } else {
-                Log.e("${Consts.LOG_TAG}_User.kt", "gender: Cannot set gender again")
-            }
-        }
+        private set
 
     var dateOfBirth: Calendar? = null
-        set(value) {
-            if (field == null || value == null) {
-                field = value
-            } else {
-                Log.e("${Consts.LOG_TAG}_User.kt", "dateOfBirth: Cannot set dateOfBirth again")
-            }
-        }
-
+        private set
     var goal: Goal? = null
-        set(value) {
-            if (field == null || value == null) {
-                field = value
-            } else {
-                Log.e("${Consts.LOG_TAG}_User.kt", "goal: Cannot set goal again")
-            }
-        }
+        private set
 
     var uid: String? = null
         set(value) {
@@ -70,8 +33,13 @@ object User {
 
     // Editable properties
     var weightInKgs: Double = 0.0
+        private set
 
     var heightInCms: Double = 0.0
+        private set
+
+    var minutesOfExercisePerDay: Double = 0.0
+        private set
 
     fun userLoggedOut() {
         name = null
@@ -81,8 +49,9 @@ object User {
         weightInKgs = 0.0
         heightInCms = 0.0
         dateOfBirth = null
-        goal = null
         uid = null
+        minutesOfExercisePerDay = 0.0
+        goal = null
     }
 
     /**
@@ -92,19 +61,35 @@ object User {
             && weightInKgs > 0.0
             && heightInCms > 0.0
             && dateOfBirth != null
-            && goal != null
+            && minutesOfExercisePerDay > 0.0
 
     fun setData(
         weightInKgs: Double,
         heightInCms: Double,
         dateOfBirth: Calendar,
         gender: Gender,
-        goal: Goal
+        minutes: Double
     ) {
         this.weightInKgs = weightInKgs
         this.heightInCms = heightInCms
         this.dateOfBirth = dateOfBirth
         this.gender = gender
+        this.minutesOfExercisePerDay = minutes
+
+        Log.d(
+            "${Consts.LOG_TAG}_User.kt",
+            "setData: User data set. ${this.weightInKgs}, ${this.heightInCms}, ${this.dateOfBirth}, ${this.gender}, ${this.minutesOfExercisePerDay}"
+        )
+    }
+
+    fun updateGoal(goal: Goal?) {
+        // Set the goal
         this.goal = goal
+    }
+
+    fun setCreds(name: String?, email: String?, photoUrl: String?) {
+        this.name = name
+        this.email = email
+        this.photoUrl = photoUrl
     }
 }

@@ -8,15 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.labz.workoutx.R
 
 
 @Composable
@@ -38,7 +40,7 @@ fun VerticalProgress(
         Column(
             modifier = modifier
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.LightGray)
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
                 .width(16.dp)
                 .heightIn(min = 200.dp, max = 250.dp)
                 .align(Alignment.CenterHorizontally)
@@ -61,13 +63,13 @@ fun VerticalProgress(
                     .fillMaxWidth()
                     .background(
                         Brush.verticalGradient(
-                            listOf(
-                                Color(0xffE000FF),
-                                Color(0xffE000FF),
-                                Color(0xFF7700FF),
-                                Color(0xFF7700FF),
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary,
+                                colorResource(id = R.color.gradient_start),
+                                colorResource(id = R.color.gradient_end),
                             )
                         )
+
                     )
             )
         }

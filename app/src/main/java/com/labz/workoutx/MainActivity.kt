@@ -21,11 +21,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.labz.workoutx.services.auth.AccountService
 import com.labz.workoutx.services.db.DBService
+import com.labz.workoutx.services.goalPredictor.GoalPredictorService
 import com.labz.workoutx.services.healthConnect.HealthConnectService
-import com.labz.workoutx.services.modules.AccountModule
-import com.labz.workoutx.services.modules.DBModule
-import com.labz.workoutx.services.modules.HealthConnectModule
-import com.labz.workoutx.services.modules.PermissionsModule
+import com.labz.workoutx.modules.AccountModule
+import com.labz.workoutx.modules.DBModule
+import com.labz.workoutx.modules.GoalPredictorServiceProvider
+import com.labz.workoutx.modules.HealthConnectModule
+import com.labz.workoutx.modules.PermissionsModule
 import com.labz.workoutx.services.permissions.PermissionsService
 import com.labz.workoutx.ui.dashboard.NavigatorObj
 import com.labz.workoutx.ui.onboarding.OnBoardingHost
@@ -50,6 +52,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var  permissionsService: PermissionsService
 
+    @Inject
+    lateinit var goalPredictorService: GoalPredictorService
+
     private val viewModel: MainActivityViewModel by viewModels()
 
     private fun initGlobalDependencies() {
@@ -57,6 +62,7 @@ class MainActivity : ComponentActivity() {
         dbService = DBModule.provideDBService()
         healthConnectService = HealthConnectModule.provideHealthConnectService()
         permissionsService = PermissionsModule.providePermissionsService()
+        goalPredictorService = GoalPredictorServiceProvider.provideGoalPredictorService()
     }
 
     override fun onResume() {
@@ -88,8 +94,7 @@ class MainActivity : ComponentActivity() {
                     // Go for the onboarding screens only if the user is not logged in
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
+                            .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         if (isLoading || isHealthConnectSDKUnavailable) {

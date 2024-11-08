@@ -22,21 +22,31 @@ import com.labz.workoutx.R
 @Composable
 fun GradientButton(
     text: String,
+    enabled: Boolean = true,
     gradient: Brush = Brush.horizontalGradient(
-        colors = listOf(
-            colorResource(id = R.color.gradient_start),
-            colorResource(id = R.color.gradient_end)
-        )
+        colors = if (enabled) {
+            listOf(
+                colorResource(id = R.color.gradient_start),
+                colorResource(id = R.color.gradient_end)
+            )
+        } else {
+            listOf(
+                colorResource(id = R.color.disabled_end).copy(alpha = 0.8f),
+                colorResource(id = R.color.disabled_end).copy(alpha = 0.8f),
+            )
+        }
     ),
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
+            disabledContainerColor = Color.Black
         ),
         contentPadding = PaddingValues(),
         onClick = { onClick() },
+        enabled = enabled,
         modifier = modifier
             .heightIn(min = 48.dp, max = 64.dp)
     ) {
@@ -55,5 +65,5 @@ fun GradientButton(
 @Preview(showBackground = true)
 @Composable
 fun GradientButtonPreview() {
-    GradientButton(text = "Sign Up", onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth())
+    GradientButton(text = "Sign Up", onClick = {  }, modifier = Modifier.fillMaxWidth(), enabled = false)
 }

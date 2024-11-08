@@ -5,6 +5,7 @@ data class DashboardUiState(
     val profilePictureUrl: String = "",
     val isCircularProgressIndicatorVisible: Boolean = false,
     val allPermissionsGranted: Boolean = false,
+    val areProgressesLoaded: Boolean = false,
 
     val stepsOfToday: Int = 0,
     val activeCaloriesBurnedToday: Double = 0.0,
@@ -12,6 +13,5 @@ data class DashboardUiState(
     val heartRateNow: Long = 0,
     val weightInKgs: Double = 0.0,
     val heightInCms: Double = 0.0,
-    val sleepSessionOfToday: String = "",
     val exerciseSessionOfToday: String = "",
 )

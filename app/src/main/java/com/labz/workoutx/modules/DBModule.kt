@@ -1,4 +1,4 @@
-package com.labz.workoutx.services.modules
+package com.labz.workoutx.modules
 
 import com.labz.workoutx.services.db.DBService
 import com.labz.workoutx.services.db.DBServiceImpl

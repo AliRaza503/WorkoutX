@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.kapt)
+    id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
 }
 
@@ -45,6 +46,13 @@ android {
     kapt {
         correctErrorTypes = true
     }
+
+    sourceSets {
+        getByName("main") {
+            assets.srcDirs("src/main/assets")
+        }
+    }
+
 }
 
 dependencies {
@@ -101,9 +109,13 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
 
-
     // Health and Fitness
     implementation(libs.androidx.connect.client)
+
+    // TensorFlow Lite
+    implementation(libs.tensorflow.lite)
+    // TensorFlow Lite Support Library (for TensorBuffer, FileUtil, etc.)
+    implementation(libs.tensorflow.lite.support)
 }
 java {
     toolchain {

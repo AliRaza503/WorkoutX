@@ -10,4 +10,6 @@
     <color name="gradient_start">#FF92A3FD</color>
     <color name="gradient_end">#FF9DCEFF</color>
     <color name="light_grey">#D3D3D3</color>
+    <color name="disabled_start">#4B4747</color>
+    <color name="disabled_end">#7B6F72</color>
 </resources>

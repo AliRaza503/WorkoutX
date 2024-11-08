@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.labz.workoutx.models.Gender
-import com.labz.workoutx.models.Goal
+import com.labz.workoutx.models.User
 import com.labz.workoutx.services.db.DBService
 import com.labz.workoutx.uistates.ProfileInitUiState
 import com.labz.workoutx.utils.Consts
@@ -27,6 +27,7 @@ class ProfileInitViewModel @Inject constructor(
         private set
     private val _navigateToDashboard = MutableStateFlow(false)
     val navigateToDashboard: StateFlow<Boolean> = _navigateToDashboard
+    private var isAlreadyInitialized: Boolean = false
 
     fun onGenderChanged(gender: String) {
         try {
@@ -82,7 +83,6 @@ class ProfileInitViewModel @Inject constructor(
                     weightError = "Weight cannot be negative",
                     weightInKgs = ""
                 )
-                Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onWeightChanged: Negative value")
                 return
             }
             uiState.value = uiState.value.copy(
@@ -130,12 +130,44 @@ class ProfileInitViewModel @Inject constructor(
         }
     }
 
-    fun onGoalChanged(goal: String) {
+    fun onMinutesActivePerDayChanged(value: String) {
+        if (value.isEmpty() || value.toDoubleOrNull() == null) {
+            uiState.value = uiState.value.copy(
+                minutesError = "Minutes are required",
+                minutesActivePerDay = null
+            )
+            Log.d(
+                "${Consts.LOG_TAG}_ProfileInitViewModel",
+                "onMinutesActivePerDayChanged: Invalid value"
+            )
+        }
         try {
-            uiState.value = uiState.value.copy(goal = Goal.valueOf(goal = goal))
-        } catch (e: IllegalArgumentException) {
-            Log.e("${Consts.LOG_TAG}_ProfileInitViewModel", "onGoalChanged: ${e.message}")
-            uiState.value = uiState.value.copy(goalError = "Invalid goal")
+            val doubleValue =
+                value.toDouble() // This will throw a NumberFormatException if the value is not a valid integer
+            if (doubleValue < 0) {
+                uiState.value = uiState.value.copy(
+                    minutesError = "Minutes cannot be negative",
+                    minutesActivePerDay = null
+                )
+                Log.e(
+                    "${Consts.LOG_TAG}_ProfileInitViewModel",
+                    "onMinutesActivePerDayChanged: Negative value"
+                )
+                return
+            }
+            uiState.value = uiState.value.copy(
+                minutesActivePerDay = value,
+                minutesError = null
+            )
+        } catch (e: NumberFormatException) {
+            uiState.value = uiState.value.copy(
+                minutesError = "Invalid minutes\nPlease enter a whole number",
+                minutesActivePerDay = null
+            )
+            Log.e(
+                "${Consts.LOG_TAG}_ProfileInitViewModel",
+                "onMinutesActivePerDayChanged: ${e.message}"
+            )
         }
     }
 
@@ -147,21 +179,17 @@ class ProfileInitViewModel @Inject constructor(
         uiState.value = uiState.value.copy(genderDropDownOpened = isExpanded)
     }
 
-    fun goalDropDownChanged(isExpanded: Boolean) {
-        uiState.value = uiState.value.copy(goalDropDownOpened = isExpanded)
-    }
-
     fun closeDatePicker() {
         uiState.value = uiState.value.copy(datePickerOpened = false)
     }
 
     fun nextBtnClicked() {
         uiState.value = uiState.value.copy(
-            weightError = if (uiState.value.weightInKgs.isNullOrEmpty() == true) "Weight is required" else null,
-            heightError = if (uiState.value.heightInCms.isNullOrEmpty() == true) "Height is required" else null,
+            weightError = if (uiState.value.weightInKgs.isNullOrEmpty() == true || uiState.value.weightInKgs!!.toDouble() < 10.0 || uiState.value.weightInKgs!!.toDouble() > 200.0) "Weight in Kgs in the range [10, 200] is required" else null,
+            heightError = if (uiState.value.heightInCms.isNullOrEmpty() == true || uiState.value.heightInCms!!.toDouble() < 50.0 || uiState.value.heightInCms!!.toDouble() > 250.0) "Height in Cms in the range [50, 300] is required" else null,
             dateOfBirthError = if (uiState.value.dateOfBirth.isNullOrEmpty() == true) "Date of birth is required" else null,
             genderError = if (uiState.value.gender == null) "Gender is required" else null,
-            goalError = if (uiState.value.goal == null) "Goal is required" else null
+            minutesError = if (uiState.value.minutesActivePerDay == null || uiState.value.minutesActivePerDay!!.toDouble() < 10.0 || uiState.value.minutesActivePerDay!!.toDouble() > 500.0) "Minutes of exercise per day in the range [10, 500] is required" else null
         )
         if (!uiState.value.hasErrors()) {
             viewModelScope.launch {
@@ -170,7 +198,7 @@ class ProfileInitViewModel @Inject constructor(
                     heightInCms = uiState.value.heightInCms!!.toDouble(),
                     dateOfBirth = uiState.value.dateOfBirth!!,
                     gender = uiState.value.gender!!.toString(),
-                    goal = uiState.value.goal!!.toString()
+                    minutesOfExercisePerDay = uiState.value.minutesActivePerDay!!.toDouble()
                 )
             }
             _navigateToDashboard.value = true
@@ -181,6 +209,19 @@ class ProfileInitViewModel @Inject constructor(
 
     fun onNavigated() {
         _navigateToDashboard.value = false // Reset navigation state after navigating
+    }
+
+    fun tryInitializeProfile() {
+        if (User.infoIsWellSet() && !isAlreadyInitialized) {
+            uiState.value = uiState.value.copy(
+                weightInKgs = User.weightInKgs.toString(),
+                heightInCms = User.heightInCms.toString(),
+                dateOfBirth = User.dateOfBirth?.toFormattedString(),
+                gender = User.gender,
+                minutesActivePerDay = User.minutesOfExercisePerDay.toString(),
+            )
+            isAlreadyInitialized = true
+        }
     }
 }
 

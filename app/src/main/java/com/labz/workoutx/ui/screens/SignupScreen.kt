@@ -1,6 +1,7 @@
 package com.labz.workoutx.ui.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,7 +54,9 @@ object SignupScreen {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 30.dp, vertical = 50.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeadingAndText(
                 heading = "Hey there,",

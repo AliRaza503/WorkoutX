@@ -22,6 +22,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,9 +38,17 @@ import com.labz.workoutx.viewmodels.ProgressesViewModel
 
 
 @Composable
-fun ProgressesComposable(viewModel: ProgressesViewModel = hiltViewModel()) {
+fun ProgressesComposable(
+    onProgressesLoaded: () -> Unit = {},
+    viewModel: ProgressesViewModel = hiltViewModel()
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
+    LaunchedEffect(uiState.isCircularProgressIndicatorVisible) {
+        if (!uiState.isCircularProgressIndicatorVisible) {
+            onProgressesLoaded()
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,7 +64,14 @@ fun ProgressesComposable(viewModel: ProgressesViewModel = hiltViewModel()) {
             )
             Text("Loading data...", modifier = Modifier.padding(8.dp))
         } else {
+            val goal =
+                viewModel.getGoal().toString().lowercase().replaceFirstChar { it.uppercase() }
 
+            Text(
+                text = "Your Goal is to $goal",
+                modifier = Modifier.padding(bottom = 8.dp),
+                style = MaterialTheme.typography.titleLarge
+            )
             Text(
                 text = "Target is ${viewModel.getTarget(selectedTab)}",
                 modifier = Modifier.padding(bottom = 8.dp),
@@ -110,8 +126,7 @@ fun ProgressesComposable(viewModel: ProgressesViewModel = hiltViewModel()) {
                 val progressDataList = when (selectedTab) {
                     ProgressTab.STEPS -> uiState.oneWeekData.map { it?.stepsData ?: 0f }
                     ProgressTab.CALORIES -> uiState.oneWeekData.map { it?.caloriesBurned ?: 0f }
-                    ProgressTab.WEIGHT -> uiState.oneWeekData.map { it?.weight ?: 0f }
-                    ProgressTab.SLEEP -> uiState.oneWeekData.map { it?.sleepScore?.size ?: 0f }
+                    ProgressTab.MINUTES -> uiState.oneWeekData.map { it?.minutesActive ?: 0f }
                 }
                 weekDays.forEachIndexed { index, day ->
                     val progress: Float = (progressDataList.getOrNull(index))?.toFloat() ?: 0f
@@ -129,7 +144,8 @@ fun ProgressesComposable(viewModel: ProgressesViewModel = hiltViewModel()) {
             }
 
             // Bottom Row for the tabs for progress types
-            val tabTitles = listOf("Steps", "Calories", "Weight", "Sleep")
+            val tabTitles =
+                ProgressTab.entries.map { it.name.lowercase().replaceFirstChar { it.uppercase() } }
             TabRow(
                 selectedTabIndex = selectedTab.ordinal,
                 modifier = Modifier.fillMaxWidth(),
