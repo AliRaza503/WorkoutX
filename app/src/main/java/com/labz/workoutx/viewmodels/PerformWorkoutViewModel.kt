@@ -91,6 +91,7 @@ class PerformWorkoutViewModel @Inject constructor(
                 dbService.addActivityMinutesOfToday(
                     minutes = uiState.value.workout?.targetMinutes?.toDouble() ?: 0.0
                 )
+                dbService.addWorkoutToHistory(uiState.value.workout?.id?.toString() ?: "")
             }
         }
     }

@@ -5,12 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
@@ -20,6 +24,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,7 +38,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,8 +50,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.labz.workoutx.R
 import com.labz.workoutx.models.User
-import com.labz.workoutx.ui.exts.GradientButton
+import com.labz.workoutx.models.Workout
 import com.labz.workoutx.ui.exts.ProgressesComposable
+import com.labz.workoutx.uistates.DashboardUiState
 import com.labz.workoutx.viewmodels.DashboardViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -53,15 +62,23 @@ import kotlin.random.Random
 data class DashBoardScreen(
     val permissionsGranted: Boolean
 ) {
+    private data class BottomBarItem(
+        val label: String,
+        val selectedIcon: ImageVector,
+        val unselectedIcon: ImageVector,
+        val onClickAction: () -> Unit
+    )
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun DashBoardScreenComposable(
         navigateToLoginScreen: () -> Unit,
         navigateToProfileInitScreen: () -> Unit,
-        navigateToWorkoutScreen: () -> Unit,
+        navigateToWorkoutPlanningScreen: (workoutId: String) -> Unit,
         modifier: Modifier = Modifier,
         viewModel: DashboardViewModel = hiltViewModel()
     ) {
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         val photoBgColor = Color(
             Random.nextInt(256),
             Random.nextInt(256),
@@ -83,6 +100,26 @@ data class DashBoardScreen(
                 )
             },
         ) {
+            val bottomBarItems = listOf(
+                BottomBarItem(
+                    label = "Home",
+                    selectedIcon = Icons.Filled.Home,
+                    unselectedIcon = Icons.Outlined.Home,
+                    onClickAction = {}
+                ),
+                BottomBarItem(
+                    label = "Workouts",
+                    selectedIcon = ImageVector.vectorResource(id = R.drawable.ic_workout),
+                    unselectedIcon = ImageVector.vectorResource(id = R.drawable.ic_workout),
+                    onClickAction = {}
+                ),
+                BottomBarItem(
+                    label = "Workout History",
+                    selectedIcon = ImageVector.vectorResource(id = R.drawable.ic_history_selected),
+                    unselectedIcon = ImageVector.vectorResource(id = R.drawable.ic_history_unselected),
+                    onClickAction = {}
+                )
+            )
             Scaffold(
                 topBar = {
                     DashBoardTopAppBar(
@@ -93,48 +130,55 @@ data class DashBoardScreen(
                                 }
                             }
                         },
+                        title = if (uiState.bottomBarSelectedItemIndex == 0) "WorkoutX" else if (uiState.bottomBarSelectedItemIndex == 1) viewModel.getGoal() else "Workout History",
                         photoBgColor = photoBgColor,
                         modifier = modifier
                     )
-                }
-            ) { innerPadding ->
-                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                when {
-                    uiState.isCircularProgressIndicatorVisible -> {
-                        Box(
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .padding(innerPadding),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    else -> {
-                        // Your normal content when permissions are granted
-                        Column(
-                            modifier = modifier
-                                .padding(innerPadding)
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceEvenly,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            ProgressesComposable(
-                                onProgressesLoaded = {
-                                    viewModel.progressesAreLoaded()
-                                }
-                            )
-                            GradientButton(
-                                text = "Get Workout According to My Goal",
-                                onClick = {
-                                    navigateToWorkoutScreen()
+                },
+                bottomBar = {
+                    NavigationBar {
+                        bottomBarItems.forEachIndexed { index, item ->
+                            NavigationBarItem(
+                                selected = uiState.bottomBarSelectedItemIndex == index,
+                                icon = {
+                                    Icon(
+                                        imageVector = if (uiState.bottomBarSelectedItemIndex == index) {
+                                            item.selectedIcon
+                                        } else {
+                                            item.unselectedIcon
+                                        },
+                                        contentDescription = item.label
+                                    )
                                 },
-                                modifier = Modifier.fillMaxWidth(0.8f),
+                                onClick = {
+                                    viewModel.updateBottomBarSelectedItemIndex(index)
+                                    item.onClickAction()
+                                },
                                 enabled = uiState.areProgressesLoaded
                             )
                         }
                     }
+                }
+            ) { innerPadding ->
+                if (uiState.bottomBarSelectedItemIndex == 0) {
+                    HomeScreen(
+                        modifier = modifier.padding(innerPadding),
+                        uiState = uiState,
+                        viewModel = viewModel
+                    )
+                } else if (uiState.bottomBarSelectedItemIndex == 1) {
+                    ChooseWorkoutScreen.ChooseWorkoutScreenComposable(
+                        navigateToWorkoutPlanningScreen = { workoutId ->
+                            navigateToWorkoutPlanningScreen(workoutId)
+                        },
+                        modifier = modifier.padding(innerPadding),
+                    )
+                } else if (uiState.bottomBarSelectedItemIndex == 2) {
+                    viewModel.getWorkoutHistory()
+                    WorkoutHistoryScreen(
+                        modifier = modifier.padding(innerPadding),
+                        history = uiState.workoutHistory
+                    )
                 }
             }
         }
@@ -142,7 +186,92 @@ data class DashBoardScreen(
     }
 
     @Composable
-    private fun DashBoardDrawer(photoBgColor: Color, logout: () -> Unit, navigateToProfileInitScreen: () -> Unit) {
+    private fun WorkoutHistoryScreen(
+        modifier: Modifier = Modifier,
+        history: List<Pair<String, Workout>>
+    ) {
+        Box(
+            modifier = modifier
+                .fillMaxSize(),
+        ) {
+            if (history.isEmpty()) {
+                Text(
+                    text = "No workout history available",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    history.forEach { (date, workout) ->
+                        val workoutName = workout.name
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = workoutName,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = date,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun HomeScreen(
+        modifier: Modifier = Modifier,
+        uiState: DashboardUiState,
+        viewModel: DashboardViewModel
+    ) {
+        when {
+            uiState.isCircularProgressIndicatorVisible -> {
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            else -> {
+                // Your normal content when permissions are granted
+                Column(
+                    modifier = modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ProgressesComposable(
+                        onProgressesLoaded = {
+                            viewModel.progressesAreLoaded()
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun DashBoardDrawer(
+        photoBgColor: Color,
+        logout: () -> Unit,
+        navigateToProfileInitScreen: () -> Unit
+    ) {
         ModalDrawerSheet {
             Box(
                 modifier = Modifier
@@ -201,12 +330,13 @@ data class DashBoardScreen(
     @Composable
     private fun DashBoardTopAppBar(
         photoBgColor: Color,
+        title: String,
         openNavDrawer: () -> Unit,
         modifier: Modifier = Modifier
     ) {
         CenterAlignedTopAppBar(
             title = {
-                Text("WorkoutX")
+                Text(title)
             },
             navigationIcon = {
                 Box(
@@ -261,3 +391,4 @@ data class DashBoardScreen(
         }
     }
 }
+

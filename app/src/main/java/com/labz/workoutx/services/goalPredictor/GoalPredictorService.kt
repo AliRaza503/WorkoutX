@@ -5,5 +5,5 @@ import com.labz.workoutx.models.Goal
 
 interface GoalPredictorService {
     fun preProcessData(application: Application, avgCalories: Double, avgMinutes: Double)
-    fun predictGoal(): Goal
+    fun predictGoal(application: Application): Goal
 }

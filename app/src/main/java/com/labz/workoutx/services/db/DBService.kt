@@ -1,6 +1,7 @@
 package com.labz.workoutx.services.db
 
 import com.labz.workoutx.models.Goal
+import com.labz.workoutx.models.Workout
 
 
 interface DBService {
@@ -17,4 +18,6 @@ interface DBService {
     suspend fun getActivityMinutesForMonth(): Map<String, Double>
     suspend fun addActivityMinutesOfToday(minutes: Double)
     suspend fun setGoal(goal: Goal)
+    suspend fun addWorkoutToHistory(uUID: String)
+    suspend fun getWorkoutHistory(): List<Pair<String, Workout>>
 }

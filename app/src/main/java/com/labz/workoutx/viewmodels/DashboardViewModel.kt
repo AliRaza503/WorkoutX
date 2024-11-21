@@ -3,7 +3,9 @@ package com.labz.workoutx.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.labz.workoutx.models.User
 import com.labz.workoutx.services.auth.AccountService
+import com.labz.workoutx.services.db.DBService
 import com.labz.workoutx.uistates.DashboardUiState
 import com.labz.workoutx.utils.Consts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,11 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val accountService: AccountService,
-//    private val dbService: DBService
+    private val dbService: DBService
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
-
 
     fun signOut(onSignOutSucceeded: () -> Unit) {
         viewModelScope.launch {
@@ -44,6 +45,29 @@ class DashboardViewModel @Inject constructor(
     fun progressesAreLoaded() {
         viewModelScope.launch {
             _uiState.update { it.copy(areProgressesLoaded = true) }
+        }
+    }
+
+    fun updateBottomBarSelectedItemIndex(index: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(bottomBarSelectedItemIndex = index) }
+        }
+    }
+
+    fun getGoal(): String {
+        return User.goal?.toString() ?: "Workouts List"
+    }
+
+    fun getWorkoutHistory() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isCircularProgressIndicatorVisible = true) }
+            val workoutHistory = dbService.getWorkoutHistory()
+            _uiState.update {
+                it.copy(
+                    isCircularProgressIndicatorVisible = false,
+                    workoutHistory = workoutHistory
+                )
+            }
         }
     }
 }

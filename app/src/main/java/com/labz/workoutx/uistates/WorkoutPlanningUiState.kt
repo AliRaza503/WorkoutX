@@ -4,5 +4,6 @@ import com.labz.workoutx.models.Workout
 
 data class WorkoutPlanningUiState (
     val isCircularProgressIndicatorVisible: Boolean = false,
-    val workout: Workout? = null
+    val workout: Workout? = null,
+    var activityMinutes : Int = 1,
 )

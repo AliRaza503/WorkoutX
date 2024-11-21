@@ -6,8 +6,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.labz.workoutx.ui.dashboard.NavigatorObj
-import com.labz.workoutx.ui.dashboard.NavigatorObj.NavigatorComposable
+import com.labz.workoutx.ui.navigator.NavigatorObj
+import com.labz.workoutx.ui.navigator.NavigatorObj.NavigatorComposable
 import com.labz.workoutx.ui.onboarding.OnBoardingScreen.OnboardingScreenComposable
 
 @Preview(showBackground = true)

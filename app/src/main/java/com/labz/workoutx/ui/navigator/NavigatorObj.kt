@@ -1,4 +1,4 @@
-package com.labz.workoutx.ui.dashboard
+package com.labz.workoutx.ui.navigator
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -25,7 +25,6 @@ import com.labz.workoutx.ui.screens.ProfileInitScreen.ProfileInitComposable
 import com.labz.workoutx.ui.screens.SignupScreen
 import com.labz.workoutx.ui.screens.SignupScreen.SignupScreenComposable
 import com.labz.workoutx.ui.screens.WorkoutPlanningScreen
-import com.labz.workoutx.ui.screens.WorkoutPlanningScreen.WorkoutPlanningScreenComposable
 import com.labz.workoutx.viewmodels.NavigatorObjViewModel
 import kotlinx.serialization.Serializable
 
@@ -138,8 +137,8 @@ object NavigatorObj {
                                 popUpTo(dashBoardScreen) { inclusive = false }
                             }
                         },
-                        navigateToWorkoutScreen = {
-                            navController.navigate(WorkoutPlanningScreen) {
+                        navigateToWorkoutPlanningScreen = { workoutId ->
+                            navController.navigate(WorkoutPlanningScreen(workoutId)) {
                                 popUpTo(dashBoardScreen) { inclusive = false }
                             }
                         }
@@ -157,11 +156,12 @@ object NavigatorObj {
                         }
                     )
                 }
-                composable<WorkoutPlanningScreen> {
-                    WorkoutPlanningScreenComposable (
+                composable<WorkoutPlanningScreen> { backStackEntry ->
+                    val workoutPlanningScreen = backStackEntry.toRoute<WorkoutPlanningScreen>()
+                    workoutPlanningScreen.WorkoutPlanningScreenComposable (
                         startWorkout = { workoutID ->
                             navController.navigate(PerformWorkoutScreen(workoutID)) {
-                                popUpTo(WorkoutPlanningScreen) { inclusive = false }
+                                popUpTo(workoutPlanningScreen) { inclusive = false }
                             }
                         }
                     )
@@ -173,6 +173,9 @@ object NavigatorObj {
                             navController.navigate(DashBoardScreen(permissionsGranted = true)) {
                                 popUpTo(performWorkoutScreen) { inclusive = true }
                             }
+                        },
+                        onWorkoutCancelled = {
+                            navController.navigateUp()
                         }
                     )
                 }

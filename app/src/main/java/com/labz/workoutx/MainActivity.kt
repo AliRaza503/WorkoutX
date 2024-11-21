@@ -19,17 +19,17 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.labz.workoutx.services.auth.AccountService
-import com.labz.workoutx.services.db.DBService
-import com.labz.workoutx.services.goalPredictor.GoalPredictorService
-import com.labz.workoutx.services.healthConnect.HealthConnectService
 import com.labz.workoutx.modules.AccountModule
 import com.labz.workoutx.modules.DBModule
 import com.labz.workoutx.modules.GoalPredictorServiceProvider
 import com.labz.workoutx.modules.HealthConnectModule
 import com.labz.workoutx.modules.PermissionsModule
+import com.labz.workoutx.services.auth.AccountService
+import com.labz.workoutx.services.db.DBService
+import com.labz.workoutx.services.goalPredictor.GoalPredictorService
+import com.labz.workoutx.services.healthConnect.HealthConnectService
 import com.labz.workoutx.services.permissions.PermissionsService
-import com.labz.workoutx.ui.dashboard.NavigatorObj
+import com.labz.workoutx.ui.navigator.NavigatorObj
 import com.labz.workoutx.ui.onboarding.OnBoardingHost
 import com.labz.workoutx.ui.theme.WorkoutXTheme
 import com.labz.workoutx.utils.Consts
@@ -88,6 +88,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WorkoutXTheme {
+//                val context = applicationContext
+//
+//                val model = goalPredictorService.loadModel(context)
+//                val (mean, scale) = goalPredictorService.loadScalerParams(context)
+//                val labels = goalPredictorService.loadLabels(context)
+//
+//                val inputData = floatArrayOf(24f, 75f, 162.56f, 25f, 25f, 30f, 1f, 0f) // Adjust accordingly
+//                val standardizedData = goalPredictorService.standardizeInput(inputData, mean, scale)
+//
+//                val output = goalPredictorService.predict(model, standardizedData)
+//                val predictedLabel = goalPredictorService.getPredictedLabel(output, labels)
+//
+//                println("Predicted Label: $predictedLabel")
+
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
                     val isHealthConnectSDKUnavailable by viewModel.isHealthConnectSDKUnavailable.collectAsStateWithLifecycle()

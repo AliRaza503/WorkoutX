@@ -9,7 +9,7 @@ object WorkoutTypes {
             Workout(
                 name = "Running",
                 description = "A high-intensity workout to boost cardiovascular health and burn calories.",
-                targetMinutes = 30,
+                targetMinutes = 6,
                 benefit = "Improves endurance, burns calories, and strengthens legs.",
                 steps = listOf(
                     "Warm up with a 5-minute walk.",
@@ -22,12 +22,12 @@ object WorkoutTypes {
             Workout(
                 name = "Cycling",
                 description = "A low-impact exercise that strengthens the lower body and improves stamina.",
-                targetMinutes = 40,
+                targetMinutes = 7,
                 benefit = "Burns calories, strengthens leg muscles, and improves cardiovascular health.",
                 steps = listOf(
                     "Adjust the bike seat to a comfortable height.",
                     "Start cycling at a moderate pace.",
-                    "Gradually increase your speed after 10 minutes.",
+                    "Gradually increase your speed after 4 minutes.",
                     "Cool down by slowing your pace for the last 5 minutes."
                 ),
                 imagePath = "file:///android_asset/images/cycling.png"
@@ -35,7 +35,7 @@ object WorkoutTypes {
             Workout(
                 name = "Jumping Jacks",
                 description = "A full-body exercise that boosts your heart rate and helps burn calories.",
-                targetMinutes = 10,
+                targetMinutes = 5,
                 benefit = "Improves cardiovascular health and enhances agility.",
                 steps = listOf(
                     "Stand with your feet together and arms by your sides.",
@@ -48,7 +48,7 @@ object WorkoutTypes {
             Workout(
                 name = "Burpees",
                 description = "A full-body exercise that builds strength and cardiovascular endurance.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Enhances full-body strength, burns calories, and boosts cardio fitness.",
                 steps = listOf(
                     "Stand with your feet shoulder-width apart.",
@@ -61,7 +61,7 @@ object WorkoutTypes {
             Workout(
                 name = "Jump Rope",
                 description = "A simple cardio workout that improves coordination and burns calories.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Burns calories, improves footwork, and strengthens leg muscles.",
                 steps = listOf(
                     "Hold the jump rope handles at each side.",
@@ -74,7 +74,7 @@ object WorkoutTypes {
             Workout(
                 name = "Rowing",
                 description = "A low-impact workout that engages the entire body for strength and endurance.",
-                targetMinutes = 30,
+                targetMinutes = 6,
                 benefit = "Builds strength, improves cardio fitness, and tones the back and arms.",
                 steps = listOf(
                     "Sit on the rowing machine with your feet strapped in. (Or tie a knot of a flexible band to a fixed object and sit on a chair)",
@@ -87,7 +87,7 @@ object WorkoutTypes {
             Workout(
                 name = "Mountain Climbers",
                 description = "A dynamic exercise that strengthens the core and boosts cardio.",
-                targetMinutes = 10,
+                targetMinutes = 5,
                 benefit = "Engages the core, shoulders, and legs, and burns calories quickly.",
                 steps = listOf(
                     "Start in a plank position with your arms straight.",
@@ -113,7 +113,7 @@ object WorkoutTypes {
             Workout(
                 name = "Box Jumps",
                 description = "A plyometric exercise that builds lower body strength and power.",
-                targetMinutes = 10,
+                targetMinutes = 3,
                 benefit = "Strengthens legs, improves explosive power, and enhances coordination.",
                 steps = listOf(
                     "Stand in front of a sturdy box or platform.",
@@ -126,25 +126,25 @@ object WorkoutTypes {
             Workout(
                 name = "Sprints",
                 description = "A high-intensity cardio workout that improves speed and endurance.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Enhances cardiovascular fitness, burns calories, and builds leg strength.",
                 steps = listOf(
                     "Start with a 5-minute warm-up jog.",
-                    "Sprint at full speed for 30 seconds.",
+                    "Sprint at full speed for 6 seconds.",
                     "Recover by walking or jogging for 1 minute.",
                     "Repeat the sprint and recovery sequence for the desired time."
                 ),
                 imagePath = "file:///android_asset/images/sprints.png",
 //                stepsAndTargetSecondsOfEach = listOf(
 //                    Pair("Warm-up Jog", 5 * 60),
-//                    Pair("Sprint", 30),
+//                    Pair("Sprint", 6),
 //                    Pair("Recovery", 60)
 //                ),
             ),
             Workout(
                 name = "Speed Skaters",
                 description = "A lateral movement exercise that improves balance and agility.",
-                targetMinutes = 10,
+                targetMinutes = 5,
                 benefit = "Strengthens legs, enhances lateral movement, and boosts cardio.",
                 steps = listOf(
                     "Start with feet together, then jump to the side landing on one foot.",
@@ -185,7 +185,7 @@ object WorkoutTypes {
             Workout(
                 name = "Deadlifts",
                 description = "A powerful weightlifting exercise targeting multiple muscle groups.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Builds strength in the legs, back, and core.",
                 steps = listOf(
                     "Stand with feet hip-width apart and barbell in front of you.",
@@ -198,7 +198,7 @@ object WorkoutTypes {
             Workout(
                 name = "Bench Press",
                 description = "A compound exercise targeting the chest, shoulders, and triceps.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Builds upper body strength, focusing on the chest and shoulders.",
                 steps = listOf(
                     "Lie back on a flat bench with feet firmly on the ground.",
@@ -224,7 +224,7 @@ object WorkoutTypes {
             Workout(
                 name = "Squats",
                 description = "A compound lower body exercise focusing on legs and core.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Strengthens legs, glutes, and core muscles.",
                 steps = listOf(
                     "Stand with feet shoulder-width apart.",
@@ -237,7 +237,7 @@ object WorkoutTypes {
             Workout(
                 name = "Push-ups",
                 description = "A basic bodyweight exercise targeting the chest, shoulders, and triceps.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Builds upper body strength and core stability.",
                 steps = listOf(
                     "Start in a plank position with hands slightly wider than shoulder-width.",
@@ -250,7 +250,7 @@ object WorkoutTypes {
             Workout(
                 name = "Overhead Press",
                 description = "A shoulder exercise that improves upper body strength and stability.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Strengthens shoulders and triceps, enhancing upper body power.",
                 steps = listOf(
                     "Stand with feet shoulder-width apart and hold the barbell at shoulder height.",
@@ -263,7 +263,7 @@ object WorkoutTypes {
             Workout(
                 name = "Bent-Over Rows",
                 description = "A back exercise that improves upper body strength and posture.",
-                targetMinutes = 12,
+                targetMinutes = 3,
                 benefit = "Targets the back, shoulders, and core for balanced upper body strength.",
                 steps = listOf(
                     "Stand with a barbell in front of you, feet shoulder-width apart.",
@@ -276,7 +276,7 @@ object WorkoutTypes {
             Workout(
                 name = "Dips",
                 description = "A bodyweight exercise that targets the triceps, chest, and shoulders.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Builds triceps, chest, and shoulder strength.",
                 steps = listOf(
                     "Place your hands on parallel bars and lift yourself up.",
@@ -289,7 +289,7 @@ object WorkoutTypes {
             Workout(
                 name = "Bicep Curls",
                 description = "An isolation exercise focusing on the biceps for arm strength.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Builds bicep strength and muscle definition.",
                 steps = listOf(
                     "Stand with a dumbbell in each hand, arms at your sides.",
@@ -302,7 +302,7 @@ object WorkoutTypes {
             Workout(
                 name = "Tricep Extensions",
                 description = "An isolation exercise focusing on the triceps for arm strength.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Strengthens the triceps for balanced arm development.",
                 steps = listOf(
                     "Hold a dumbbell with both hands above your head.",
@@ -315,7 +315,7 @@ object WorkoutTypes {
             Workout(
                 name = "Dumbbell Rows",
                 description = "A back exercise that improves upper body strength and stability.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Targets the back, shoulders, and core.",
                 steps = listOf(
                     "Place your left knee and hand on a bench for support, holding a dumbbell in your right hand.",
@@ -328,7 +328,7 @@ object WorkoutTypes {
             Workout(
                 name = "Chest Flyes",
                 description = "An isolation exercise focusing on the chest muscles for strength and definition.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Builds chest strength and enhances muscle definition.",
                 steps = listOf(
                     "Lie on a bench holding a dumbbell in each hand above your chest.",
@@ -341,7 +341,7 @@ object WorkoutTypes {
             Workout(
                 name = "Lateral Raises",
                 description = "A shoulder exercise that enhances upper body width and strength.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Strengthens shoulders and improves shoulder definition.",
                 steps = listOf(
                     "Stand with a dumbbell in each hand, arms at your sides.",
@@ -354,7 +354,7 @@ object WorkoutTypes {
             Workout(
                 name = "Hammer Curls",
                 description = "An arm exercise that targets the biceps and forearms.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Builds arm and forearm strength for balanced upper body development.",
                 steps = listOf(
                     "Hold a dumbbell in each hand with palms facing each other.",
@@ -369,7 +369,7 @@ object WorkoutTypes {
             Workout(
                 name = "Squats",
                 description = "A compound exercise that primarily targets the lower body, especially the quads, glutes, and hamstrings.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Builds leg and core strength, enhances stability and balance.",
                 steps = listOf(
                     "Stand with feet shoulder-width apart.",
@@ -382,7 +382,7 @@ object WorkoutTypes {
             Workout(
                 name = "Deadlifts",
                 description = "A powerful lower body and back exercise that also engages core muscles.",
-                targetMinutes = 12,
+                targetMinutes = 3,
                 benefit = "Strengthens the entire posterior chain, improving lower back and core stability.",
                 steps = listOf(
                     "Stand with feet hip-width apart and a barbell over your mid-foot.",
@@ -395,7 +395,7 @@ object WorkoutTypes {
             Workout(
                 name = "Bench Press",
                 description = "An upper body strength exercise that targets the chest, shoulders, and triceps.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Develops upper body strength and muscle definition in the chest.",
                 steps = listOf(
                     "Lie back on a bench with feet on the ground and grip the barbell slightly wider than shoulder-width.",
@@ -408,7 +408,7 @@ object WorkoutTypes {
             Workout(
                 name = "Lunges",
                 description = "A leg exercise that targets the quadriceps, hamstrings, and glutes.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Improves leg strength, balance, and stability.",
                 steps = listOf(
                     "Stand with feet together and step forward with one foot.",
@@ -421,7 +421,7 @@ object WorkoutTypes {
             Workout(
                 name = "Kettlebell Swings",
                 description = "A dynamic full-body exercise that focuses on the lower body and core.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Increases power and endurance, particularly in the lower body.",
                 steps = listOf(
                     "Stand with feet shoulder-width apart and hold a kettlebell with both hands.",
@@ -434,7 +434,7 @@ object WorkoutTypes {
             Workout(
                 name = "Barbell Rows",
                 description = "A back exercise that also engages the shoulders and arms.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Strengthens the back and improves posture and stability.",
                 steps = listOf(
                     "Stand with feet hip-width apart, bending slightly at the knees and hips.",
@@ -447,7 +447,7 @@ object WorkoutTypes {
             Workout(
                 name = "Chin-ups",
                 description = "An upper body exercise focusing on the biceps and back.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Improves upper body strength and builds biceps and lats.",
                 steps = listOf(
                     "Grab the bar with an underhand grip, hands shoulder-width apart.",
@@ -460,7 +460,7 @@ object WorkoutTypes {
             Workout(
                 name = "Power Cleans",
                 description = "An explosive movement that works the entire body, improving power and coordination.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Builds total-body strength, power, and speed.",
                 steps = listOf(
                     "Stand with feet hip-width apart, gripping the bar with hands shoulder-width.",
@@ -473,7 +473,7 @@ object WorkoutTypes {
             Workout(
                 name = "Push Press",
                 description = "An upper body exercise targeting the shoulders, chest, and triceps.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Builds upper body strength and shoulder stability.",
                 steps = listOf(
                     "Stand with feet shoulder-width apart, holding a barbell at shoulder height.",
@@ -486,7 +486,7 @@ object WorkoutTypes {
             Workout(
                 name = "Chest Dips",
                 description = "An exercise that primarily targets the chest, triceps, and shoulders.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Builds chest and tricep strength.",
                 steps = listOf(
                     "Grip the dip bars (Or any two strong bars) and lift your body up.",
@@ -499,7 +499,7 @@ object WorkoutTypes {
             Workout(
                 name = "Dumbbell Snatches",
                 description = "A full-body explosive movement that builds power and coordination.",
-                targetMinutes = 8,
+                targetMinutes = 4,
                 benefit = "Increases total-body strength and enhances athletic performance.",
                 steps = listOf(
                     "Stand with feet shoulder-width apart, holding a dumbbell in one hand.",
@@ -512,7 +512,7 @@ object WorkoutTypes {
             Workout(
                 name = "Weighted Pull-ups",
                 description = "An advanced version of pull-ups with added weight for extra resistance.",
-                targetMinutes = 10,
+                targetMinutes = 4,
                 benefit = "Increases upper body strength, focusing on the back and biceps.",
                 steps = listOf(
                     "Wear a weight belt or hold a dumbbell between your feet.",
@@ -527,7 +527,7 @@ object WorkoutTypes {
             Workout(
                 name = "Yoga",
                 description = "A mind-body practice that combines physical postures, breathing exercises, and meditation.",
-                targetMinutes = 30,
+                targetMinutes = 6,
                 benefit = "Improves flexibility, strength, and mental well-being.",
                 steps = listOf(
                     "Start with a few minutes of deep breathing.",
@@ -544,7 +544,7 @@ object WorkoutTypes {
                 benefit = "Reduces muscle tension, improves range of motion, and prevents injury.",
                 steps = listOf(
                     "Perform dynamic stretches to warm up the muscles.",
-                    "Hold static stretches for 15-30 seconds each.",
+                    "Hold static stretches for 4-6 seconds each.",
                     "Focus on major muscle groups like hamstrings, quads, and shoulders.",
                     "Breathe deeply and relax into each stretch."
                 ),
@@ -566,12 +566,12 @@ object WorkoutTypes {
             Workout(
                 name = "Cycling",
                 description = "A low-impact exercise that strengthens the lower body and improves stamina.",
-                targetMinutes = 40,
+                targetMinutes = 7,
                 benefit = "Burns calories, strengthens leg muscles, and improves cardiovascular health.",
                 steps = listOf(
                     "Adjust the bike seat to a comfortable height.",
                     "Start cycling at a moderate pace.",
-                    "Gradually increase your speed after 10 minutes.",
+                    "Gradually increase your speed after 4 minutes.",
                     "Cool down by slowing your pace for the last 5 minutes."
                 ),
                 imagePath = "file:///android_asset/images/cycling.png"
@@ -579,7 +579,7 @@ object WorkoutTypes {
             Workout(
                 name = "Light Weight Bicep Curls",
                 description = "A resistance training workout using light weights to tone and strengthen muscles.",
-                targetMinutes = 20,
+                targetMinutes = 5,
                 benefit = "Improves muscle tone, endurance, and overall fitness.",
                 steps = listOf(
                     "Choose light dumbbells or resistance bands for the workout.",
@@ -592,7 +592,7 @@ object WorkoutTypes {
             Workout(
                 name = "Light Weight Tricep Extensions",
                 description = "An exercise that targets the triceps using light weights for muscle toning.",
-                targetMinutes = 20,
+                targetMinutes = 5,
                 benefit = "Strengthens and tones the triceps for improved arm definition.",
                 steps = listOf(
                     "Select light dumbbells or resistance bands for the workout.",
@@ -605,7 +605,7 @@ object WorkoutTypes {
             Workout(
                 name = "Light Weight Shoulder Press",
                 description = "A shoulder exercise using light weights to tone and strengthen the deltoids.",
-                targetMinutes = 20,
+                targetMinutes = 5,
                 benefit = "Builds shoulder strength and improves upper body definition.",
                 steps = listOf(
                     "Choose light dumbbells or resistance bands for the workout.",
@@ -631,7 +631,7 @@ object WorkoutTypes {
             Workout(
                 name = "Walking",
                 description = "A low-impact aerobic exercise that improves cardiovascular health and burns calories.",
-                targetMinutes = 30,
+                targetMinutes = 6,
                 benefit = "Boosts heart health, strengthens muscles, and aids in weight management.",
                 steps = listOf(
                     "Start with a brisk pace that raises your heart rate.",
@@ -644,7 +644,7 @@ object WorkoutTypes {
             Workout(
                 name = "Low-Impact step touches",
                 description = "Aerobic exercises that raise the heart rate without high-impact movements.",
-                targetMinutes = 30,
+                targetMinutes = 6,
                 benefit = "Improves cardiovascular fitness, coordination, and endurance.",
                 steps = listOf(
                     "Start with a warm-up to prepare your body for exercise.",
@@ -657,7 +657,7 @@ object WorkoutTypes {
             Workout(
                 name = "Rowing",
                 description = "A full-body workout that engages multiple muscle groups for strength and endurance.",
-                targetMinutes = 30,
+                targetMinutes = 6,
                 benefit = "Builds strength, improves cardio fitness, and tones the back and arms.",
                 steps = listOf(
                     "Sit on the rowing machine with your feet strapped in.",
@@ -670,7 +670,7 @@ object WorkoutTypes {
             Workout(
                 name = "Jump Rope",
                 description = "A simple cardio workout that improves coordination and burns calories.",
-                targetMinutes = 15,
+                targetMinutes = 4,
                 benefit = "Burns calories, improves footwork, and strengthens leg muscles.",
                 steps = listOf(
                     "Hold the jump rope handles at each side.",
@@ -682,11 +682,6 @@ object WorkoutTypes {
             )
         )
     )
-
-    // Function to get a random workout by goal
-    fun getRandomWorkout(goal: Goal): Workout? {
-        return workoutTypes[goal]?.random()
-    }
 
     // Function to get a workout by id:
     fun getWorkoutById(id: String): Workout? {
@@ -700,6 +695,14 @@ object WorkoutTypes {
             }
         }
         return null
+    }
+
+    fun setWorkoutMinutes(workout: Workout, minutes: Int) {
+        workout.targetMinutes = minutes
+    }
+
+    fun getAllWorkouts(): Map<Goal, List<Workout>> {
+        return workoutTypes
     }
 }
 

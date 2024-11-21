@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +47,7 @@ data class PerformWorkoutScreen(
     @Composable
     fun PerformWorkoutComposable(
         viewModel: PerformWorkoutViewModel = hiltViewModel(),
+        onWorkoutCancelled: () -> Unit,
         onWorkoutFinished: () -> Unit
     ) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,6 +64,20 @@ data class PerformWorkoutScreen(
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    // Navigate back
+                                    onWorkoutCancelled()
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_back),
+                                    contentDescription = "Close Workout",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        },
                         title = {
                             Text(uiState.workout?.name ?: "Workout")
                         },
@@ -103,13 +118,12 @@ data class PerformWorkoutScreen(
     fun FullScreenCountdown(countdownValue: Int) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = if (countdownValue == 0) "Go!" else countdownValue.toString(),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 72.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -125,7 +139,10 @@ data class PerformWorkoutScreen(
         onStartStopClick: (Boolean) -> Unit, // Callback for start/stop action
     ) {
         LaunchedEffect(key1 = remainingTime, key2 = isRunning) {
-            Log.d("PerformWorkoutScreen", "CountdownTimer: remainingTime: $remainingTime, isRunning: $isRunning")
+            Log.d(
+                "PerformWorkoutScreen",
+                "CountdownTimer: remainingTime: $remainingTime, isRunning: $isRunning"
+            )
             if (remainingTime <= 1000L) {
                 onTimerFinish()
             }
@@ -136,7 +153,7 @@ data class PerformWorkoutScreen(
             label = ""
         )
         val animatedTextColor by animateColorAsState(
-            targetValue = if (remainingTime < totalTime / 5) Color.Red else Color.White,
+            targetValue = if (remainingTime < totalTime / 5) Color.Red else MaterialTheme.colorScheme.onBackground,
             animationSpec = tween(durationMillis = 500), label = ""
         )
         Column(

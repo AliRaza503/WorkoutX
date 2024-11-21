@@ -73,7 +73,7 @@ fun ProgressesComposable(
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = "Target is ${viewModel.getTarget(selectedTab)}",
+                text = viewModel.getTarget(selectedTab),
                 modifier = Modifier.padding(bottom = 8.dp),
                 style = MaterialTheme.typography.titleMedium
             )

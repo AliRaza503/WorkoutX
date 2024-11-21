@@ -193,9 +193,9 @@ class ProgressesViewModel @Inject constructor(
 
     fun getTarget(tab: ProgressTab): String {
         return when (tab) {
-            ProgressTab.STEPS -> "to achieve ${TargetProgressData.TARGET_STEPS.toInt()} step count"
-            ProgressTab.CALORIES -> "to burn ${TargetProgressData.TARGET_TOTAL_CALORIES_BURNED.toInt()} calories in total"
-            ProgressTab.MINUTES -> "to do workout for ${TargetProgressData.TARGET_MINUTES_ACTIVE_PER_DAY.toInt()} minutes per day"
+            ProgressTab.STEPS -> "Walk ${TargetProgressData.TARGET_STEPS.toInt()} steps per day"
+            ProgressTab.CALORIES -> "Burn ${TargetProgressData.TARGET_TOTAL_CALORIES_BURNED.toInt()} calories per day"
+            ProgressTab.MINUTES -> "Spend ${TargetProgressData.TARGET_MINUTES_ACTIVE_PER_DAY.toInt()} minutes doing workout per day"
         }
     }
 
@@ -205,7 +205,7 @@ class ProgressesViewModel @Inject constructor(
             val avgTotalCaloriesBurned = progressMap.value.values.map { it.caloriesBurned }.average()
             val avgMinutesActive = progressMap.value.values.map { it.minutesActive }.average()
             goalPredictorService.preProcessData(application = application, avgCalories = avgTotalCaloriesBurned, avgMinutes = avgMinutesActive)
-            goal = goalPredictorService.predictGoal()
+            goal = goalPredictorService.predictGoal(application = application)
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
                     dbService.setGoal(goal)

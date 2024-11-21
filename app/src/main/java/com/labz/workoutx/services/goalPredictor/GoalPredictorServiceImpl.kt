@@ -1,21 +1,21 @@
 package com.labz.workoutx.services.goalPredictor
 
 import android.app.Application
+import android.content.Context
+import android.util.Log
 import com.labz.workoutx.models.Gender
 import com.labz.workoutx.models.Goal
 import com.labz.workoutx.models.User
 import com.labz.workoutx.utils.Consts
-import org.tensorflow.lite.DataType
+import org.json.JSONArray
+import org.json.JSONObject
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.util.Calendar
 
 class GoalPredictorServiceImpl : GoalPredictorService {
     private lateinit var interpreter: Interpreter
-    private lateinit var byteBuffer: ByteBuffer
+    private lateinit var inputData: FloatArray
 
     // Calculate BMI
     private fun calculateBMI(weight: Float, height: Float): Float {
@@ -32,41 +32,18 @@ class GoalPredictorServiceImpl : GoalPredictorService {
     private fun calculateGenderOther(gender: Gender): Float =
         if (gender == Gender.PREFER_NOT_TO_SAY) 1f else 0f
 
-
-    // Preprocess input data
-    private fun initByteBuffer(
-        dob: Calendar,
-        gender: Gender,
-        weight: Float,
-        height: Float,
-        caloriesBurned: Float,
-        workoutTime: Float
-    ) {
-        val byteBuffer =
-            ByteBuffer.allocateDirect(8 * 4)  // 8 input features, 4 bytes each (float32)
-        byteBuffer.order(ByteOrder.nativeOrder())
-        byteBuffer.putFloat(calculateAge(dob))
-        byteBuffer.putFloat(weight)
-        byteBuffer.putFloat(height)
-        byteBuffer.putFloat(calculateBMI(weight, height))
-        byteBuffer.putFloat(caloriesBurned)
-        byteBuffer.putFloat(workoutTime)
-        byteBuffer.putFloat(calculateGender(gender))
-        byteBuffer.putFloat(calculateGenderOther(gender))
-        this.byteBuffer = byteBuffer
+    private fun standardizeInput(data: FloatArray, meanArray: FloatArray, scaleArray: FloatArray): FloatArray {
+        return FloatArray(data.size) { (data[it] - meanArray[it]) / scaleArray[it] }
     }
 
-    // Interpret the output (customize according to your classes)
-    private fun interpretOutput(output: FloatArray): Goal {
-//        val classNames = listOf("Lose Weight", "Gain Weight", "Maintain Weight", "Build Muscles")
-        val maxIndex = output.indices.maxByOrNull { output[it] } ?: -1
-        return when (maxIndex) {
-            2 -> Goal.LOSE_WEIGHT
-            1 -> Goal.GAIN_WEIGHT
-            3 -> Goal.MAINTAIN_WEIGHT
-            0 -> Goal.BUILD_MUSCLE
-            else -> throw IllegalArgumentException("Unknown Goal value: $maxIndex")
-        }
+    private fun loadScalerParams(context: Context): Pair<FloatArray, FloatArray> {
+        val json = context.assets.open("scaler_params.json").bufferedReader().use { it.readText() }
+        val jsonObject = JSONObject(json)
+        val mean = jsonObject.getJSONArray("mean")
+        val scale = jsonObject.getJSONArray("scale")
+        val meanArray = FloatArray(mean.length()) { mean.getDouble(it).toFloat() }
+        val scaleArray = FloatArray(scale.length()) { scale.getDouble(it).toFloat() }
+        return Pair(meanArray, scaleArray)
     }
 
     override fun preProcessData(
@@ -74,39 +51,61 @@ class GoalPredictorServiceImpl : GoalPredictorService {
         avgCalories: Double,
         avgWorkoutMinutes: Double
     ) {
+        val (meanArray, scaleArray) = loadScalerParams(application)
         // Load the TFLite model from assets
-        interpreter = Interpreter(
-            FileUtil.loadMappedFile(
-                application.applicationContext,
-                Consts.getModelPath(),
+        if (!this::interpreter.isInitialized) {
+            interpreter = Interpreter(
+                FileUtil.loadMappedFile(application, Consts.getModelPath())
             )
-        )
-        if (User.infoIsWellSet()) {
-            initByteBuffer(
-                dob = User.dateOfBirth!!,
-                gender = User.gender!!,
-                weight = User.weightInKgs.toFloat(),
-                height = User.heightInCms.toFloat(),
-                caloriesBurned = avgCalories.toFloat(),
-                workoutTime = avgWorkoutMinutes.toFloat(),
+        }
+        //    'Age', 'Weight', 'Height', 'BMI', 'Calories Burned', 'Workout Time (min)', 'Gender_Male', 'Gender_Other'
+
+        try {
+            val floatArray = floatArrayOf(
+                calculateAge(User.dateOfBirth!!),
+                User.weightInKgs.toFloat(),
+                User.heightInCms.toFloat(),
+                calculateBMI(User.weightInKgs.toFloat(), User.heightInCms.toFloat()),
+                avgCalories.toFloat()/100f,
+                avgWorkoutMinutes.toFloat(),
+                calculateGender(User.gender!!),
+                calculateGenderOther(User.gender!!)
             )
+            inputData = standardizeInput(floatArray, meanArray, scaleArray)
+        } catch (e: KotlinNullPointerException) {
+            Log.e("GoalPredictorService", "User data not loaded", e)
         }
     }
 
-    override fun predictGoal(): Goal {
+    private fun loadLabels(context: Context): List<String> {
+        val json = context.assets.open("labels.json").bufferedReader().use { it.readText() }
+        return JSONArray(json).let { 0.until(it.length()).map { i -> it.getString(i) } }
+    }
+
+    private fun getPredictedLabel(output: FloatArray, labels: List<String>): String {
+        val maxIndex = output.indices.maxByOrNull { output[it] } ?: -1
+        return labels[maxIndex]
+    }
+
+    private fun predictionHelper(model: Interpreter, inputData: FloatArray): FloatArray {
+        val output = Array(1) { FloatArray(4) }
+        model.run(arrayOf(inputData), output)
+        return output[0]
+    }
+
+    override fun predictGoal(application: Application): Goal {
         var goal: Goal
         try {
-            val outputBuffer = TensorBuffer.createFixedSize(intArrayOf(1, 4), DataType.FLOAT32)
-            interpreter.run(byteBuffer, outputBuffer.buffer.rewind())
-            // Get the output goal prediction
-            val output = outputBuffer.floatArray
-            goal = interpretOutput(output)
-        } catch (_: Exception) {
+            val output = predictionHelper(interpreter, inputData)
+            val labels = loadLabels(application)
+            val predictedLabel = getPredictedLabel(output, labels)
+            goal = Goal.valueOf(goal = predictedLabel)!!
+        } catch (e: Exception) {
+            Log.e("GoalPredictorService", "Error predicting goal", e)
             return Goal.MAINTAIN_WEIGHT
         } finally {
 //            interpreter.close()
         }
         return goal
     }
-
 }

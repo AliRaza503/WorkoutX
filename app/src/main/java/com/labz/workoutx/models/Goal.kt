@@ -1,14 +1,8 @@
 package com.labz.workoutx.models
 
-/**
- *        Actual Goal  Encoded Goal
- * 0    Build Muscles             0
- * 1  Maintain Weight             3
- * 2      Lose Weight             2
- * 3      Gain Weight             1
- */
+
 enum class Goal(val string: String) {
-    BUILD_MUSCLE("Build Muscle"),
+    BUILD_MUSCLE("Build Muscles"),
     GAIN_WEIGHT("Gain Weight"),
     LOSE_WEIGHT("Lose Weight"),
     MAINTAIN_WEIGHT("Maintain Weight");
@@ -23,7 +17,7 @@ enum class Goal(val string: String) {
                 "Lose Weight" -> LOSE_WEIGHT
                 "Maintain Weight" -> MAINTAIN_WEIGHT
                 "Gain Weight" -> GAIN_WEIGHT
-                "Build Muscle" -> BUILD_MUSCLE
+                "Build Muscles" -> BUILD_MUSCLE
                 "" -> null
                 null -> null
                 else -> throw IllegalArgumentException("Invalid Goal value: $goal")
