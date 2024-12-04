@@ -10,5 +10,7 @@ data class Workout(
     var targetMinutes: Int,                // Suggested time to perform the activity
     val benefit: String,                   // Benefits of doing the activity
     val steps: List<String>,               // Steps to perform the workout
-    val imagePath: String                  // Path to the image in assets
+    val imagePath: String,                 // Path to the image in assets
+    val isRepeatable: Boolean = false,     // Whether the workout has an activity that must have a repetitions count
+    val repCount : Int = 0                 // Number of repetitions for the workout
 )

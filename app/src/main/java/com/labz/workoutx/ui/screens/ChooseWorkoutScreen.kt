@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +37,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.labz.workoutx.R
 import com.labz.workoutx.models.Workout
-import com.labz.workoutx.uistates.ChooseWorkoutUiState
 import com.labz.workoutx.viewmodels.ChooseWorkoutViewModel
 import kotlinx.serialization.Serializable
 
@@ -186,32 +184,13 @@ object ChooseWorkoutScreen {
             }
         }
     }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun WorkoutFilterChips(uiState: ChooseWorkoutUiState, viewModel: ChooseWorkoutViewModel) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(4.dp),
-//            horizontalArrangement = Arrangement.SpaceEvenly
-//        ) {
-//            uiState.allWorkouts.keys.forEach { goal ->
-//                FilterChip(
-//                    selected = uiState.selectedGoal == goal,
-//                    onClick = { viewModel.filterWorkoutsBasedOnUserGoal(goal) },
-//                    label = { Text(text = goal.name, fontSize = 8.sp) },
-//                    modifier = Modifier.padding(2.dp)
-//                )
-//            }
-//        }
-    }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ChooseWorkoutScreenPreview() {
-    ChooseWorkoutScreen.ChooseWorkoutScreenComposable(
-        navigateToWorkoutPlanningScreen = {}
-    )
-}
+
+//@Preview(showBackground = true)
+//@Composable
+//fun ChooseWorkoutScreenPreview() {
+//    ChooseWorkoutScreen.ChooseWorkoutScreenComposable(
+//        navigateToWorkoutPlanningScreen = {}
+//    )
+//}

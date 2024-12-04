@@ -257,7 +257,7 @@ class DBServiceImpl : DBService {
 //    "Cool down with a 5-minute walk at the end."
 //    ),
 //    imagePath = "file:///android_asset/images/running.png"
-    override suspend fun addWorkoutToHistory(workoutID: String) {
+    override suspend fun addWorkoutToHistory(workoutID: String, workoutReps: Int) {
         try {
             val database = Firebase.database
             val userRef = database.getReference("users/${Firebase.auth.currentUser!!.uid}")
@@ -272,6 +272,8 @@ class DBServiceImpl : DBService {
             workoutRef.child("workoutSteps").setValue(workout?.steps)
             workoutRef.child("workoutImagePath").setValue(workout?.imagePath)
             workoutRef.child("date").setValue(todaysDate)
+            workoutRef.child("reps").setValue(workoutReps)
+            workoutRef.child("isRepeatable").setValue(workout?.isRepeatable)
             Log.d(
                 "${Consts.LOG_TAG}_RealTimeDataBaseServiceImpl",
                 "addWorkoutToHistory: $workoutID"
@@ -307,7 +309,9 @@ class DBServiceImpl : DBService {
                                 .getValue(String::class.java) ?: "",
                             steps = steps ?: listOf(),
                             imagePath = workoutSnapshot.child("workoutImagePath")
-                                .getValue(String::class.java) ?: ""
+                                .getValue(String::class.java) ?: "",
+                            repCount = workoutSnapshot.child("reps").getValue(Int::class.java) ?: 0,
+                            isRepeatable = workoutSnapshot.child("isRepeatable").getValue(Boolean::class.java) ?: false
                         )
                         val date = workoutSnapshot.child("date").getValue(String::class.java) ?: ""
                         workoutHistory.add(Pair(date, workout))

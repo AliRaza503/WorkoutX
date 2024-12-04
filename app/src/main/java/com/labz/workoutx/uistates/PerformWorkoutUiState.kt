@@ -9,4 +9,5 @@ data class PerformWorkoutUiState(
     val remainingTime: Long = 0L, // To track countdown timer
     val isTimerRunning: Boolean = true, // To track if the timer is running
     val isWorkoutLoaded: Boolean = false,
+    val getRepsDialogBoxVisible: Boolean = false,
 )

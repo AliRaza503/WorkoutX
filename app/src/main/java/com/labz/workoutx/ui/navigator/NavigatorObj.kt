@@ -24,6 +24,8 @@ import com.labz.workoutx.ui.screens.ProfileInitScreen
 import com.labz.workoutx.ui.screens.ProfileInitScreen.ProfileInitComposable
 import com.labz.workoutx.ui.screens.SignupScreen
 import com.labz.workoutx.ui.screens.SignupScreen.SignupScreenComposable
+import com.labz.workoutx.ui.screens.WorkoutFinishedCongratsScreen
+import com.labz.workoutx.ui.screens.WorkoutFinishedCongratsScreen.WorkoutFinishedCongratsScreenComposable
 import com.labz.workoutx.ui.screens.WorkoutPlanningScreen
 import com.labz.workoutx.viewmodels.NavigatorObjViewModel
 import kotlinx.serialization.Serializable
@@ -170,12 +172,22 @@ object NavigatorObj {
                     val performWorkoutScreen = backStackEntry.toRoute<PerformWorkoutScreen>()
                     performWorkoutScreen.PerformWorkoutComposable(
                         onWorkoutFinished = {
-                            navController.navigate(DashBoardScreen(permissionsGranted = true)) {
+                            navController.navigate(WorkoutFinishedCongratsScreen) {
                                 popUpTo(performWorkoutScreen) { inclusive = true }
                             }
                         },
                         onWorkoutCancelled = {
                             navController.navigateUp()
+                        }
+                    )
+                }
+
+                composable<WorkoutFinishedCongratsScreen> {
+                    WorkoutFinishedCongratsScreenComposable(
+                        backToHome = {
+                            navController.navigate(DashBoardScreen(permissionsGranted = true)) {
+                                popUpTo(WorkoutFinishedCongratsScreen) { inclusive = true }
+                            }
                         }
                     )
                 }

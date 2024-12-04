@@ -220,6 +220,17 @@ data class DashBoardScreen(
                                 text = workoutName,
                                 style = MaterialTheme.typography.bodyMedium
                             )
+                            if (workout.isRepeatable && workout.repCount > 0) {
+                                Text(
+                                    text = "${workout.repCount} times",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            } else {
+                                Text(
+                                    text = "${workout.targetMinutes} minutes",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
                             Text(
                                 text = date,
                                 style = MaterialTheme.typography.bodyMedium

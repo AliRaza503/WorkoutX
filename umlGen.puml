@@ -1,0 +1,47 @@
+@startuml ProjectUML
+
+class MainActivity {
+    +onCreate(Bundle)
+    +onResume()
+    -initGlobalDependencies()
+}
+
+
+class MainActivityViewModel {
+    +isLoading: LiveData<Boolean>
+    +isHealthConnectSDKUnavailable: LiveData<Boolean>
+    +isUserLoggedIn(): Boolean
+    +checkAndInstallHealthConnectSDK(context: Context)
+}
+
+interface AccountService {
+    {abstract}
+    +authenticate(email: String, password: String, dbServiceRef: DBService, onResult: (Throwable?) -> Unit)
+    +createAccountWithEmailPassword(email: String, password: String, userName: String, onResult: (Throwable?) -> Unit)
+    +getCurrentUser(): FirebaseUser?
+    +sendPasswordResetEmail(emailAddress: String)
+    +signInWithGoogle(context: Context, dbServiceRef: DBService): Flow<Result<AuthResult>>
+    +signOut(onResult: (Throwable?) -> Unit)
+    +isUserLoggedIn(): Boolean
+}
+
+class AccountServiceImpl {
+    +authenticate(email: String, password: String, dbServiceRef: DBService, onResult: (Throwable?) -> Unit)
+    +createAccountWithEmailPassword(email: String, password: String, userName: String, onResult: (Throwable?) -> Unit)
+    +getCurrentUser(): FirebaseUser?
+    +sendPasswordResetEmail(emailAddress: String)
+    +signInWithGoogle(context: Context, dbServiceRef: DBService): Flow<Result<AuthResult>>
+    +signOut(onResult: (Throwable?) -> Unit)
+    +isUserLoggedIn(): Boolean
+}
+
+class AccountModule {
+    +provideAccountService(): AccountService
+}
+
+MainActivity --> MainActivityViewModel
+MainActivity o-- AccountService
+MainActivity o-- AccountModule
+AccountServiceImpl -|> AccountService
+AccountModule *-- AccountService : Provides Account Service
+@enduml

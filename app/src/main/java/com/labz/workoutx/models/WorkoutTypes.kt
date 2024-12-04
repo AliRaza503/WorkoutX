@@ -43,7 +43,8 @@ object WorkoutTypes {
                     "Return to the starting position.",
                     "Repeat the movement continuously."
                 ),
-                imagePath = "file:///android_asset/images/jumping_jacks.png"
+                imagePath = "file:///android_asset/images/jumping_jacks.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Burpees",
@@ -56,7 +57,8 @@ object WorkoutTypes {
                     "Kick your feet back to a plank position.",
                     "Jump your feet back towards your hands and stand up."
                 ),
-                imagePath = "file:///android_asset/images/burpees.png"
+                imagePath = "file:///android_asset/images/burpees.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Jump Rope",
@@ -69,7 +71,8 @@ object WorkoutTypes {
                     "Land on the balls of your feet.",
                     "Continue jumping at a steady rhythm."
                 ),
-                imagePath = "file:///android_asset/images/jump_rope.png"
+                imagePath = "file:///android_asset/images/jump_rope.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Rowing",
@@ -82,7 +85,8 @@ object WorkoutTypes {
                     "Lean back slightly and pull the handle towards your chest.",
                     "Extend your arms and bend your knees to return to the starting position."
                 ),
-                imagePath = "file:///android_asset/images/rowing.png"
+                imagePath = "file:///android_asset/images/rowing.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Mountain Climbers",
@@ -95,7 +99,8 @@ object WorkoutTypes {
                     "Continue alternating legs at a fast pace.",
                     "Keep your core engaged throughout the movement."
                 ),
-                imagePath = "file:///android_asset/images/mountain_climbers.png"
+                imagePath = "file:///android_asset/images/mountain_climbers.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "High-Knees",
@@ -108,7 +113,8 @@ object WorkoutTypes {
                     "Continue lifting knees as high as possible in a running motion.",
                     "Keep your back straight and core engaged."
                 ),
-                imagePath = "file:///android_asset/images/high_knees.png"
+                imagePath = "file:///android_asset/images/high_knees.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Box Jumps",
@@ -121,7 +127,8 @@ object WorkoutTypes {
                     "Stand up straight on top of the box, then step down carefully.",
                     "Repeat the jump, maintaining control."
                 ),
-                imagePath = "file:///android_asset/images/box_jumps.png"
+                imagePath = "file:///android_asset/images/box_jumps.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Sprints",
@@ -178,7 +185,8 @@ object WorkoutTypes {
                     "Lower your legs back down without touching the ground.",
                     "Repeat for the desired number of reps."
                 ),
-                imagePath = "file:///android_asset/images/leg_raises.png"
+                imagePath = "file:///android_asset/images/leg_raises.png",
+                isRepeatable = true
             )
         ),
         Goal.GAIN_WEIGHT to listOf(
@@ -193,7 +201,8 @@ object WorkoutTypes {
                     "Lift the barbell by straightening your legs and back.",
                     "Lower the barbell slowly back to the ground."
                 ),
-                imagePath = "file:///android_asset/images/deadlifts.png"
+                imagePath = "file:///android_asset/images/deadlifts.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Bench Press",
@@ -206,7 +215,8 @@ object WorkoutTypes {
                     "Lower the barbell to your chest, keeping elbows at a 45-degree angle.",
                     "Push the barbell back up until your arms are straight."
                 ),
-                imagePath = "file:///android_asset/images/bench_press.png"
+                imagePath = "file:///android_asset/images/bench_press.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Pull-ups",
@@ -219,7 +229,8 @@ object WorkoutTypes {
                     "Lower yourself back down with control.",
                     "Repeat for the desired number of reps."
                 ),
-                imagePath = "file:///android_asset/images/pull_ups.png"
+                imagePath = "file:///android_asset/images/pull_ups.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Squats",
@@ -232,7 +243,8 @@ object WorkoutTypes {
                     "Keep your chest up and knees over your toes.",
                     "Return to standing by pushing through your heels."
                 ),
-                imagePath = "file:///android_asset/images/squats.png"
+                imagePath = "file:///android_asset/images/squats.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Push-ups",
@@ -245,7 +257,8 @@ object WorkoutTypes {
                     "Push back up to the starting position.",
                     "Keep your body in a straight line throughout."
                 ),
-                imagePath = "file:///android_asset/images/push_ups.png"
+                imagePath = "file:///android_asset/images/push_ups.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Overhead Press",
@@ -258,7 +271,8 @@ object WorkoutTypes {
                     "Lower the barbell back down to shoulder height with control.",
                     "Repeat for the desired number of reps."
                 ),
-                imagePath = "file:///android_asset/images/overhead_press.png"
+                imagePath = "file:///android_asset/images/overhead_press.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Bent-Over Rows",
@@ -271,7 +285,8 @@ object WorkoutTypes {
                     "Pull the barbell towards your torso, squeezing your shoulder blades.",
                     "Lower the barbell back down with control."
                 ),
-                imagePath = "file:///android_asset/images/bent_over_row.png"
+                imagePath = "file:///android_asset/images/bent_over_row.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Dips",
@@ -284,7 +299,8 @@ object WorkoutTypes {
                     "Push yourself back up to the starting position.",
                     "Keep your body stable throughout the movement."
                 ),
-                imagePath = "file:///android_asset/images/dips.png"
+                imagePath = "file:///android_asset/images/dips.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Bicep Curls",
@@ -297,7 +313,8 @@ object WorkoutTypes {
                     "Lower the weights back to the starting position with control.",
                     "Repeat for the desired number of reps."
                 ),
-                imagePath = "file:///android_asset/images/bicep_curls.png"
+                imagePath = "file:///android_asset/images/bicep_curls.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Tricep Extensions",
@@ -310,7 +327,8 @@ object WorkoutTypes {
                     "Extend your arms back to the starting position.",
                     "Keep your upper arms stationary throughout the movement."
                 ),
-                imagePath = "file:///android_asset/images/tricep_extensions.png"
+                imagePath = "file:///android_asset/images/tricep_extensions.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Dumbbell Rows",
@@ -323,7 +341,8 @@ object WorkoutTypes {
                     "Lower the dumbbell back down with control.",
                     "Switch sides and repeat."
                 ),
-                imagePath = "file:///android_asset/images/dumbbell_rows.png"
+                imagePath = "file:///android_asset/images/dumbbell_rows.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Chest Flyes",
@@ -336,7 +355,8 @@ object WorkoutTypes {
                     "Bring the weights back up to the starting position.",
                     "Repeat for the desired number of reps."
                 ),
-                imagePath = "file:///android_asset/images/chest_fly.png"
+                imagePath = "file:///android_asset/images/chest_fly.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Lateral Raises",
@@ -349,7 +369,8 @@ object WorkoutTypes {
                     "Lower the weights back down with control.",
                     "Keep a slight bend in your elbows throughout."
                 ),
-                imagePath = "file:///android_asset/images/lateral_raises.png"
+                imagePath = "file:///android_asset/images/lateral_raises.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Hammer Curls",
@@ -362,7 +383,8 @@ object WorkoutTypes {
                     "Lower the weights back to the starting position.",
                     "Repeat for the desired number of reps."
                 ),
-                imagePath = "file:///android_asset/images/hammer_curls.png"
+                imagePath = "file:///android_asset/images/hammer_curls.png",
+                isRepeatable = true
             )
         ),
         Goal.BUILD_MUSCLE to listOf(
@@ -377,7 +399,8 @@ object WorkoutTypes {
                     "Keep your chest up and knees aligned with your toes.",
                     "Push through your heels to return to a standing position."
                 ),
-                imagePath = "file:///android_asset/images/squats.png"
+                imagePath = "file:///android_asset/images/squats.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Deadlifts",
@@ -390,7 +413,8 @@ object WorkoutTypes {
                     "Lift the bar by extending your hips and knees, keeping your back straight.",
                     "Lower the bar back down with control to the starting position."
                 ),
-                imagePath = "file:///android_asset/images/deadlifts.png"
+                imagePath = "file:///android_asset/images/deadlifts.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Bench Press",
@@ -403,7 +427,8 @@ object WorkoutTypes {
                     "Push the bar back up until your arms are straight.",
                     "Repeat for desired reps."
                 ),
-                imagePath = "file:///android_asset/images/bench_press.png"
+                imagePath = "file:///android_asset/images/bench_press.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Lunges",
@@ -416,7 +441,8 @@ object WorkoutTypes {
                     "Push back up to the starting position and switch legs.",
                     "Repeat for desired reps."
                 ),
-                imagePath = "file:///android_asset/images/lunges.png"
+                imagePath = "file:///android_asset/images/lunges.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Kettlebell Swings",
@@ -429,7 +455,8 @@ object WorkoutTypes {
                     "Thrust your hips forward to swing the kettlebell to shoulder height and higher.",
                     "Control the kettlebell back down and repeat."
                 ),
-                imagePath = "file:///android_asset/images/kettlebell_swings.png"
+                imagePath = "file:///android_asset/images/kettlebell_swings.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Barbell Rows",
@@ -442,7 +469,8 @@ object WorkoutTypes {
                     "Pull the bar towards your torso, squeezing shoulder blades together.",
                     "Lower the bar back down with control."
                 ),
-                imagePath = "file:///android_asset/images/barbell_rows.png"
+                imagePath = "file:///android_asset/images/barbell_rows.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Chin-ups",
@@ -455,7 +483,8 @@ object WorkoutTypes {
                     "Lower yourself back down with control.",
                     "Repeat for desired reps."
                 ),
-                imagePath = "file:///android_asset/images/chin_ups.png"
+                imagePath = "file:///android_asset/images/chin_ups.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Power Cleans",
@@ -468,7 +497,8 @@ object WorkoutTypes {
                     "Catch the bar on your shoulders, standing upright.",
                     "Lower the bar back down with control."
                 ),
-                imagePath = "file:///android_asset/images/power_cleans.png"
+                imagePath = "file:///android_asset/images/power_cleans.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Push Press",
@@ -481,7 +511,8 @@ object WorkoutTypes {
                     "Lower the bar back to shoulder height with control.",
                     "Repeat for desired reps."
                 ),
-                imagePath = "file:///android_asset/images/push_press.png"
+                imagePath = "file:///android_asset/images/push_press.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Chest Dips",
@@ -494,7 +525,8 @@ object WorkoutTypes {
                     "Push back up to the starting position.",
                     "Repeat for desired reps."
                 ),
-                imagePath = "file:///android_asset/images/chest_dips.png"
+                imagePath = "file:///android_asset/images/chest_dips.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Dumbbell Snatches",
@@ -507,7 +539,8 @@ object WorkoutTypes {
                     "Return to the starting position with control.",
                     "Repeat on both sides for desired reps."
                 ),
-                imagePath = "file:///android_asset/images/dumbbell_snatches.png"
+                imagePath = "file:///android_asset/images/dumbbell_snatches.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Weighted Pull-ups",
@@ -520,7 +553,8 @@ object WorkoutTypes {
                     "Lower yourself back down with control.",
                     "Repeat for desired reps."
                 ),
-                imagePath = "file:///android_asset/images/weighted_pull_ups.png"
+                imagePath = "file:///android_asset/images/weighted_pull_ups.png",
+                isRepeatable = true
             )
         ),
         Goal.MAINTAIN_WEIGHT to listOf(
@@ -548,7 +582,8 @@ object WorkoutTypes {
                     "Focus on major muscle groups like hamstrings, quads, and shoulders.",
                     "Breathe deeply and relax into each stretch."
                 ),
-                imagePath = "file:///android_asset/images/stretches.png"
+                imagePath = "file:///android_asset/images/stretches.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Planks",
@@ -587,7 +622,8 @@ object WorkoutTypes {
                     "Focus on proper form and controlled movements.",
                     "Increase repetitions or weights as needed."
                 ),
-                imagePath = "file:///android_asset/images/bicep_curls.png"
+                imagePath = "file:///android_asset/images/bicep_curls.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Light Weight Tricep Extensions",
@@ -600,7 +636,8 @@ object WorkoutTypes {
                     "Maintain proper form and controlled movements.",
                     "Increase repetitions or weights as you progress."
                 ),
-                imagePath = "file:///android_asset/images/tricep_extensions.png"
+                imagePath = "file:///android_asset/images/tricep_extensions.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Light Weight Shoulder Press",
@@ -613,7 +650,8 @@ object WorkoutTypes {
                     "Focus on proper form and controlled movements.",
                     "Increase repetitions or weights as you advance."
                 ),
-                imagePath = "file:///android_asset/images/shoulder_press.png"
+                imagePath = "file:///android_asset/images/shoulder_press.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Pilates",
@@ -626,7 +664,8 @@ object WorkoutTypes {
                     "Touch the ground with your hands.",
                     "Take deep breaths and hold the pose."
                 ),
-                imagePath = "file:///android_asset/images/pilates.png"
+                imagePath = "file:///android_asset/images/pilates.png",
+                isRepeatable = true
             ),
             Workout(
                 name = "Walking",
@@ -678,7 +717,8 @@ object WorkoutTypes {
                     "Land on the balls of your feet.",
                     "Continue jumping at a steady rhythm."
                 ),
-                imagePath = "file:///android_asset/images/jump_rope.png"
+                imagePath = "file:///android_asset/images/jump_rope.png",
+                isRepeatable = true
             )
         )
     )

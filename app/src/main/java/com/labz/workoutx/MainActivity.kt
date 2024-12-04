@@ -88,20 +88,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WorkoutXTheme {
-//                val context = applicationContext
-//
-//                val model = goalPredictorService.loadModel(context)
-//                val (mean, scale) = goalPredictorService.loadScalerParams(context)
-//                val labels = goalPredictorService.loadLabels(context)
-//
-//                val inputData = floatArrayOf(24f, 75f, 162.56f, 25f, 25f, 30f, 1f, 0f) // Adjust accordingly
-//                val standardizedData = goalPredictorService.standardizeInput(inputData, mean, scale)
-//
-//                val output = goalPredictorService.predict(model, standardizedData)
-//                val predictedLabel = goalPredictorService.getPredictedLabel(output, labels)
-//
-//                println("Predicted Label: $predictedLabel")
-
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()

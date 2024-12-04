@@ -18,6 +18,6 @@ interface DBService {
     suspend fun getActivityMinutesForMonth(): Map<String, Double>
     suspend fun addActivityMinutesOfToday(minutes: Double)
     suspend fun setGoal(goal: Goal)
-    suspend fun addWorkoutToHistory(uUID: String)
+    suspend fun addWorkoutToHistory(uUID: String, workoutReps: Int)
     suspend fun getWorkoutHistory(): List<Pair<String, Workout>>
 }

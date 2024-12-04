@@ -13,25 +13,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.labz.workoutx.R
@@ -100,8 +109,12 @@ data class PerformWorkoutScreen(
                             uiState.workout?.targetMinutes?.toLong()?.times(60_000) ?: 0,
                             uiState.remainingTime,
                             onTimerFinish = {
-                                viewModel.workoutCompleted()
-                                onWorkoutFinished()
+                                if (uiState.workout?.isRepeatable == true) {
+                                    viewModel.showGetRepsDialogBox()
+                                } else {
+                                    viewModel.workoutCompleted()
+                                    onWorkoutFinished()
+                                }
                             },
                             isRunning = uiState.isTimerRunning,
                             onStartStopClick = {
@@ -112,6 +125,71 @@ data class PerformWorkoutScreen(
                 }
             }
         }
+
+        if (uiState.getRepsDialogBoxVisible) {
+            // Show the dialog box to get the number of reps
+            GetRepsDialogBox(
+                onConfirm = {
+                    viewModel.onRepsEntered(it)
+                    viewModel.workoutCompleted()
+                    onWorkoutFinished()
+                }
+            )
+        }
+    }
+
+    @Composable
+    fun GetRepsDialogBox(
+        onConfirm: (Int) -> Unit
+    ) {
+        var input by remember { mutableStateOf("") }
+        var showError by remember { mutableStateOf(false) }
+
+        AlertDialog(
+            onDismissRequest = {},
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val number = input.toIntOrNull()
+                        if (number != null && number > 0) {
+                            onConfirm(number)
+                        } else {
+                            showError = true
+                        }
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            ),
+            title = {
+                Text(text = "Please enter the number of repetitions for this workout")
+            },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = input,
+                        onValueChange = {
+                            input = it
+                            showError = false
+                        },
+                        label = { Text("Repetitions Count") },
+                        isError = showError,
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                    )
+                    if (showError) {
+                        Text(
+                            text = "Please enter a valid number greater than zero",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
+        )
     }
 
     @Composable

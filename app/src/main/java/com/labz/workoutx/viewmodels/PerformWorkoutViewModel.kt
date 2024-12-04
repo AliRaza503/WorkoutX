@@ -23,6 +23,7 @@ class PerformWorkoutViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PerformWorkoutUiState())
     val uiState = _uiState.asStateFlow()
+    private var workoutReps = 0
 
     fun loadWorkout(workoutID: String) {
         _uiState.value = uiState.value.copy(isCircularProgressIndicatorVisible = true)
@@ -91,8 +92,21 @@ class PerformWorkoutViewModel @Inject constructor(
                 dbService.addActivityMinutesOfToday(
                     minutes = uiState.value.workout?.targetMinutes?.toDouble() ?: 0.0
                 )
-                dbService.addWorkoutToHistory(uiState.value.workout?.id?.toString() ?: "")
+                dbService.addWorkoutToHistory(uiState.value.workout?.id?.toString() ?: "", workoutReps)
             }
         }
+    }
+
+    fun showGetRepsDialogBox() {
+        _uiState.update { it.copy(getRepsDialogBoxVisible = true) }
+    }
+
+    fun hideGetRepsDialogBox() {
+        _uiState.update { it.copy(getRepsDialogBoxVisible = false) }
+    }
+
+    fun onRepsEntered(reps: Int) {
+        workoutReps = reps
+        hideGetRepsDialogBox()
     }
 }
